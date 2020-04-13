@@ -47,5 +47,9 @@ Router::addGroup('', function ()
         Router::post('/avatar', 'App\Controller\File\FileController@uploadAvatar');
         Router::patch('/token', 'App\Controller\Token\TokenController@update');
         Router::delete('/token', 'App\Controller\Token\TokenController@delete');
+        Router::get('/addresses', 'App\Controller\User\UserAddressesController@show');
+        Router::post('/addresses', 'App\Controller\User\UserAddressesController@store');
+        Router::patch('/addresses', 'App\Controller\User\UserAddressesController@update');
+        Router::delete('/addresses', 'App\Controller\User\UserAddressesController@delete');
     });
 }, ['middleware' => $authMiddleWare]);

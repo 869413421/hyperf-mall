@@ -34,7 +34,7 @@ class UserAddress extends ModelBase implements ModelInterface
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['province','city','district','address','zip','contact_name','contact_phone','user_id','last_used_at'];
     /**
      * The attributes that should be cast to native types.
      *

@@ -13,12 +13,18 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Constants\ResponesCode;
-use App\Constants\ResponseCode;
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface;
-
+use Hyperf\Contract\LengthAwarePaginatorInterface;
 
 class BaseController extends AbstractController
 {
-
+    public function getPaginateData(LengthAwarePaginatorInterface $paginateData)
+    {
+        return [
+            'list' => $paginateData->items(),
+            'currentPage'=>$paginateData->currentPage(),
+            'lastPage'=>$paginateData->lastPage(),
+            'total'=>$paginateData->total(),
+            'pageSize'=>$paginateData->perPage()
+        ];
+    }
 }
