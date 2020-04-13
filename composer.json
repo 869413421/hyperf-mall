@@ -19,12 +19,12 @@
         "hyperf/config": "~1.1.0",
         "hyperf/db-connection": "~1.1.0",
         "hyperf/framework": "~1.1.0",
-        "hyperf/guzzle": "~1.1.0",
+        "hyperf/guzzle": "^1.1",
         "hyperf/http-server": "~1.1.0",
         "hyperf/logger": "~1.1.0",
         "hyperf/memory": "~1.1.0",
         "hyperf/process": "~1.1.0",
-        "hyperf/redis": "~1.1.0",
+        "hyperf/redis": "^1.1",
         "hyperf/json-rpc": "^1.1",
         "hyperf/rpc": "~1.1.0",
         "hyperf/rpc-client": "~1.1.0",
@@ -43,7 +43,10 @@
         "hyperf/translation": "^1.1",
         "phper666/jwt-auth": "~2.0.1",
         "hyperf/config-aliyun-acm": "^1.1",
-        "hyperf/http-message": "^1.1"
+        "hyperf/http-message": "^1.1",
+        "phpmailer/phpmailer": "^6.1",
+        "hyperf/view": "^1.1",
+        "hyperf/filesystem": "^1.1"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
