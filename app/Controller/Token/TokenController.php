@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Token;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Request\Token\TokenRequest;
 use App\Services\User\UserService;
@@ -30,7 +29,7 @@ class TokenController extends BaseController
         $loginData = $request->validated();
         $tokenData = $this->userService->login($loginData);
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '登陆成功', $tokenData));
+        return $this->response->json(responseSuccess(200, '登陆成功', $tokenData));
     }
 
     public function update()
@@ -42,12 +41,12 @@ class TokenController extends BaseController
             'expTime' => $this->jwt->getTTL()
         ];
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '更新成功', $tokenData));
+        return $this->response->json(responseSuccess(200, '更新成功', $tokenData));
     }
 
     public function delete()
     {
         $this->jwt->logout();
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '退出成功'));
+        return $this->response->json(responseSuccess(200, '退出成功'));
     }
 }

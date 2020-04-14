@@ -63,7 +63,7 @@ class UserService
                 throw new UserServiceException(422, '短信验证码错误');
             }
         }
-
+        
         $user = new User();
         $user->fill($data);
         $user->save();

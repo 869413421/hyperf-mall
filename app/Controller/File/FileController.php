@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\File;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Handler\File\FileUploadHandler;
 use App\Request\File\FileRequest;
@@ -17,10 +16,10 @@ class FileController extends BaseController
         $path = $uploadHandler->uploadFile($file, 'avatar');
         if (!$path)
         {
-            return $this->response->json(responseError(ResponseCode::ERROR, '上传失败'));
+            return $this->response->json(responseError(0, '上传失败'));
         }
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '上传成功', [
+        return $this->response->json(responseSuccess(200, '上传成功', [
             'path' => $path
         ]));
     }

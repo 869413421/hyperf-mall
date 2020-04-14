@@ -55,7 +55,7 @@ class ModelBase extends Model implements ModelInterface
      * @param string $sort *排序方式
      * @return \Hyperf\Contract\LengthAwarePaginatorInterface
      */
-    public static function getList(array $where, $pageSize = 20, $select = ['*'], $order = 'created_at', $sort = 'DESC')
+    public static function getList(array $where=[], $pageSize = 20, $select = ['*'], $order = 'created_at', $sort = 'DESC')
     {
         return self::query()->where($where)->select($select)->orderBy($order, $sort)->paginate($pageSize);
     }

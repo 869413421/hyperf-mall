@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Email;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Model\User\User;
 use App\Request\Email\EmailRequest;
@@ -26,12 +25,12 @@ class EmailController extends BaseController
 
         if (!$user)
         {
-            return $this->response->json(responseError(ResponseCode::UNPROCESSABLE, '邮箱没注册'));
+            return $this->response->json(responseError(422, '邮箱没注册'));
         }
 
         $this->userService->sendVerifyEmailToUser($user);
 
-        return $this->response->json(responseSuccess(ResponseCode::CREATE_ED, '发送成功'));
+        return $this->response->json(responseSuccess(201, '发送成功'));
     }
 
     /**
@@ -44,6 +43,6 @@ class EmailController extends BaseController
         $data = $request->validated();
         $this->userService->verifyEmail($data);
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS));
+        return $this->response->json(responseSuccess(200));
     }
 }

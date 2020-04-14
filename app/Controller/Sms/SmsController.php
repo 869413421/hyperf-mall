@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Sms;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Handler\Sms\SmsInterface;
 use App\Request\Sms\SmsRequest;
@@ -34,13 +33,13 @@ class SmsController extends BaseController
         $cacheCode = $this->redis->get($sessionKey);
         if (!$cacheCode || $cacheCode != $code)
         {
-            return $this->response->json(responseError(ResponseCode::UNPROCESSABLE, '验证码错误'));
+            return $this->response->json(responseError(422, '验证码错误'));
         }
 
         $sendCode = str_pad((string)mt_rand(000000, 999999), 6, '0');
         if (!$this->service->send($phone, ['code' => $sendCode]))
         {
-            return $this->response->json(responseError(ResponseCode::NO_CONTENT, '短信发送失败'));
+            return $this->response->json(responseError(204, '短信发送失败'));
         }
 
         $this->redis->del($sessionKey);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Request\User\UserRequest;
 use App\Services\User\UserService;
@@ -35,7 +34,7 @@ class UserController extends BaseController
             $message = "注册成功，请前往邮箱{$user->email}激活账号";
         }
 
-        return $this->response->json(responseSuccess(ResponseCode::CREATE_ED, $message));
+        return $this->response->json(responseSuccess(200, $message));
     }
 
     /**
@@ -48,10 +47,10 @@ class UserController extends BaseController
         $user = $request->getAttribute('user');
         if (!$this->service->updateUserInfo($user, $request->validated()))
         {
-            return $this->response->json(responseError(ResponseCode::ERROR, '更新失败'));
+            return $this->response->json(responseError(0, '更新失败'));
         }
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '更新成功'));
+        return $this->response->json(responseSuccess(200, '更新成功'));
     }
 
 
@@ -59,7 +58,7 @@ class UserController extends BaseController
     {
         $this->service->resetPassword($request->validated());
 
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '重置成功'));
+        return $this->response->json(responseSuccess(200, '重置成功'));
     }
 
 }

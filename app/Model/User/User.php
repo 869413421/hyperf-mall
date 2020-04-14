@@ -6,6 +6,7 @@ namespace App\Model\User;
 
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
+use Donjan\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
@@ -26,6 +27,7 @@ use App\Model\ModelInterface;
  */
 class User extends ModelBase implements ModelInterface
 {
+    use HasRoles;
 
     const DISABLES = 1;
 

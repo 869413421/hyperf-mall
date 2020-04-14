@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use Hyperf\HttpServer\Router\Router;
 use App\Middleware\JwtAuthMiddleWare;
+use App\Middleware\PermissionMiddleware;
 
 $authMiddleWare = [
     JwtAuthMiddleWare::class,
@@ -37,19 +38,28 @@ Router::addGroup('', function ()
 
 });
 //用户访问路由
-Router::addGroup('', function ()
+Router::addGroup('/user', function ()
 {
-    //User
-    Router::addGroup('/user', function ()
-    {
-        Router::patch('', 'App\Controller\User\UserController@update');
-        Router::delete('', 'App\Controller\User\UserController@delete');
-        Router::post('/avatar', 'App\Controller\File\FileController@uploadAvatar');
-        Router::patch('/token', 'App\Controller\Token\TokenController@update');
-        Router::delete('/token', 'App\Controller\Token\TokenController@delete');
-        Router::get('/addresses', 'App\Controller\User\UserAddressesController@show');
-        Router::post('/addresses', 'App\Controller\User\UserAddressesController@store');
-        Router::patch('/addresses', 'App\Controller\User\UserAddressesController@update');
-        Router::delete('/addresses', 'App\Controller\User\UserAddressesController@delete');
-    });
+    Router::patch('', 'App\Controller\User\UserController@update');
+    Router::delete('', 'App\Controller\User\UserController@delete');
+    Router::post('/avatar', 'App\Controller\File\FileController@uploadAvatar');
+    Router::patch('/token', 'App\Controller\Token\TokenController@update');
+    Router::delete('/token', 'App\Controller\Token\TokenController@delete');
+    Router::get('/addresses', 'App\Controller\User\UserAddressesController@show');
+    Router::post('/addresses', 'App\Controller\User\UserAddressesController@store');
+    Router::patch('/addresses', 'App\Controller\User\UserAddressesController@update');
+    Router::delete('/addresses', 'App\Controller\User\UserAddressesController@delete');
 }, ['middleware' => $authMiddleWare]);
+
+//
+Router::addGroup('/center', function ()
+{
+    //Admin
+    Router::addGroup('/admin', function ()
+    {
+        Router::get('', 'App\Controller\Center\AdminController@show');
+    });
+}, ['middleware' => [
+    JwtAuthMiddleWare::class,
+    PermissionMiddleware::class,
+]]);

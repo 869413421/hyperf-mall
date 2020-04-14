@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
-use App\Constants\ResponseCode;
 use App\Controller\BaseController;
 use App\Exception\ServiceException;
 use App\Model\User\UserAddress;
@@ -20,7 +19,7 @@ class UserAddressesController extends BaseController
         $user = $this->request->getAttribute('user');
 
         $data = $this->getPaginateData(UserAddress::getList(['user_id' => $user->id]));
-        return $this->response->json(responseSuccess(ResponseCode::SUCCESS, '成功', $data));
+        return $this->response->json(responseSuccess(200, '成功', $data));
     }
 
     public function store(UserAddressesRequest $request)
@@ -33,7 +32,7 @@ class UserAddressesController extends BaseController
         $data['last_used_at'] = Carbon::now();
         UserAddress::query()->create($data);
 
-        return $this->response->json(responseSuccess(ResponseCode::CREATE_ED));
+        return $this->response->json(responseSuccess(201));
     }
 
     public function update(UserAddressesRequest $request)

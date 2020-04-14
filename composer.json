@@ -46,7 +46,8 @@
         "hyperf/http-message": "^1.1",
         "phpmailer/phpmailer": "^6.1",
         "hyperf/view": "^1.1",
-        "hyperf/filesystem": "^1.1"
+        "hyperf/filesystem": "^1.1",
+        "donjan-deng/hyperf-permission": "~1.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
