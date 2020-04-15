@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace App\Exception\Handler;
 
-use App\Exception\ServiceException;
+use Donjan\Permission\Exceptions\UnauthorizedException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
-class AppServiceExceptionHandler extends ExceptionHandler
+class AppUnauthorizedExceptionHandler extends ExceptionHandler
 {
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
@@ -41,6 +41,6 @@ class AppServiceExceptionHandler extends ExceptionHandler
     public function isValid(Throwable $throwable): bool
     {
         //当前的异常是否属于业务异常
-        return $throwable instanceof ServiceException;
+        return $throwable instanceof UnauthorizedException;
     }
 }

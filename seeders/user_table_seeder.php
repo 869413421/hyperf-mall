@@ -11,7 +11,7 @@ class UserTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function createData()
     {
         \App\Model\User\User::query()->create([
             'user_name' => 'admin',

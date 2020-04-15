@@ -1,10 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Middleware;
 
 use App\Model\Permission\Permission;
+use App\Model\User\User;
 use Hyperf\Di\Annotation\Inject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,14 +28,16 @@ class PermissionMiddleware implements MiddlewareInterface
         //去掉路由参数
         $dispatcher = $request->getAttribute('Hyperf\HttpServer\Router\Dispatched');
         $route = $dispatcher->handler->route;
-        $path = '/' . $this->config->get('app_name') . $route . '/' . $request->getMethod();
+        $path = $route . '/' . $request->getMethod();
         $path = strtolower($path);
 
-        $permission = Permission::getPermissions(['name' => $path])->first();
+        $permission = Permission::getPermissions(['url' => $path])->first();
 
+        var_dump($path, $permission);
+        /**@var $user User * */
         $user = $request->getAttribute('user');
-        var_dump($path,$permission, ($permission && $user->checkPermissionTo($permission)));
-        if ($user && (!$permission || ($permission && $user->checkPermissionTo($permission)))) {
+        if ($user && ($permission && $user->checkPermissionTo($permission)))
+        {
             return $handler->handle($request);
         }
         throw new UnauthorizedException('无权进行该操作', 403);

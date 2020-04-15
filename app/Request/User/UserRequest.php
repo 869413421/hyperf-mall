@@ -60,6 +60,7 @@ class UserRequest extends FormRequest
             'password' => 'required|alpha_dash|min:6',
             'email' => 'required_without:phone|email|unique:users',
             'phone' => 'required_without:email|unique:users',
+            'code' => 'required_with:phone|string|min:6',
         ];
 
         return $rules;

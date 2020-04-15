@@ -16,7 +16,8 @@ return [
             App\Exception\Handler\AppExceptionHandler::class,
             App\Exception\Handler\AppTokenExceptionHandler::class,
             App\Exception\Handler\AppValidationExceptionHandler::class,
-            App\Exception\Handler\AppServiceExceptionHandler::class
+            App\Exception\Handler\AppServiceExceptionHandler::class,
+            App\Exception\Handler\AppUnauthorizedExceptionHandler::class
         ],
     ],
 ];

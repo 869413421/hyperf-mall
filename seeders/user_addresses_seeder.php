@@ -11,7 +11,7 @@ class UserAddressesSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function createData()
     {
         for ($i = 0; $i < 50; $i++)
         {

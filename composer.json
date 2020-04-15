@@ -47,7 +47,9 @@
         "phpmailer/phpmailer": "^6.1",
         "hyperf/view": "^1.1",
         "hyperf/filesystem": "^1.1",
-        "donjan-deng/hyperf-permission": "~1.0"
+        "donjan-deng/hyperf-permission": "~1.0",
+        "firstphp/wsdebug": "^1.1",
+        "hyperf/websocket-server": "^1.1"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
@@ -72,7 +74,8 @@
         },
         "files": [
             "app/Helpers/ResponseHelper.php",
-            "app/Helpers/PregHelper.php"
+            "app/Helpers/PregHelper.php",
+            "app/Helpers/Helper.php"
         ]
     },
     "autoload-dev": {

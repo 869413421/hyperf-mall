@@ -11,13 +11,13 @@ class PermissionTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function createData()
     {
         \Hyperf\DbConnection\Db::table((new App\Model\Permission\Permission())->getTable())->insert([
             [
                 'id' => 1,
                 'parent_id' => 0,
-                'url' => 'center',
+                'url' => '/center',
                 'name' => '系统管理',
                 'display_name' => '系统管理',
                 'guard_name' => 'web',
@@ -26,8 +26,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 2,
                 'parent_id' => 1,
-                'url' => 'center/admin',
-                'name' => 'center/admin/get',
+                'url' => '/center/admin/get',
+                'name' => '用户管理',
                 'display_name' => '用户管理',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -35,8 +35,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 3,
                 'parent_id' => 1,
-                'url' => 'center/role',
-                'name' => '/center/role/get',
+                'url' => '/center/role/get',
+                'name' => '角色管理',
                 'display_name' => '角色管理',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -44,8 +44,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 4,
                 'parent_id' => 1,
-                'url' => 'center/permissions',
-                'name' => '/center/permissions/get',
+                'url' => '/center/permissions/get',
+                'name' => '节点管理',
                 'display_name' => '节点管理',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -53,16 +53,16 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 5,
                 'parent_id' => 2,
-                'url' => 'center/admin',
-                'name' => '/center/admin/post',
+                'url' => '/center/admin/post',
+                'name' => '新建用户',
                 'display_name' => '新建用户',
                 'guard_name' => 'web',
                 'sort' => 0
             ], [
                 'id' => 6,
                 'parent_id' => 2,
-                'url' => 'center/admin',
-                'name' => '/center/admin/{id:\d+}/patch',
+                'url' => '/center/admin/{id:\d+}/patch',
+                'name' => '编辑用户',
                 'display_name' => '编辑用户',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -70,16 +70,16 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 7,
                 'parent_id' => 3,
-                'url' => 'center/role',
-                'name' => '/center/role/post',
+                'url' => '/center/role/post',
+                'name' => '新建角色',
                 'display_name' => '新建角色',
                 'guard_name' => 'web',
                 'sort' => 0
             ], [
                 'id' => 8,
                 'parent_id' => 3,
-                'url' => 'center/role',
-                'name' => '/center/role/{id:\d+}/patch',
+                'url' => '/center/role/{id:\d+}/patch',
+                'name' => '编辑角色',
                 'display_name' => '编辑角色',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -87,8 +87,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 9,
                 'parent_id' => 4,
-                'url' => 'center/permissions',
-                'name' => '/center/permission/post',
+                'url' => '/center/permission/post',
+                'name' => '新建节点',
                 'display_name' => '新建节点',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -96,8 +96,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 10,
                 'parent_id' => 4,
-                'url' => 'center/permissions',
-                'name' => '/center/permission/{id:\d+}/patch',
+                'url' => '/center/permission/{id:\d+}/patch',
+                'name' => '编辑节点',
                 'display_name' => '编辑节点',
                 'guard_name' => 'web',
                 'sort' => 0
@@ -105,8 +105,8 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 11,
                 'parent_id' => 4,
-                'url' => 'center/admin',
-                'name' => '/center/admin/{id:\d+}/role/patch',
+                'url' => '/center/admin/{id:\d+}/role/patch',
+                'name' => '分配角色',
                 'display_name' => '分配角色',
                 'guard_name' => 'web',
                 'sort' => 0
