@@ -32,9 +32,8 @@ class PermissionMiddleware implements MiddlewareInterface
         $path = strtolower($path);
 
         $permission = Permission::getPermissions(['url' => $path])->first();
-
-        var_dump($path, $permission);
         /**@var $user User * */
+        var_dump($path);
         $user = $request->getAttribute('user');
         if ($user && ($permission && $user->checkPermissionTo($permission)))
         {

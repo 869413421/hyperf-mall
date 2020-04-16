@@ -20,13 +20,15 @@ $authMiddleWare = [
 ];
 
 //debug
-Router::addRoute(['GET', 'POST', 'HEAD'], '/wsdebug', function() {
+Router::addRoute(['GET', 'POST', 'HEAD'], '/wsdebug', function ()
+{
     $wsdebug = new \Firstphp\Wsdebug\Wsdebug();
     $response = new \Hyperf\HttpServer\Response();
     return $response->raw($wsdebug->getHtml())->withHeader('content-type', 'text/html; charset=utf-8');
 });
 
-Router::addServer('ws', function () {
+Router::addServer('ws', function ()
+{
     Router::get('/', Firstphp\Wsdebug\Wsdebug::class);
 });
 
@@ -70,12 +72,31 @@ Router::addGroup('/center', function ()
     Router::addGroup('/admin', function ()
     {
         Router::get('', 'App\Controller\Center\AdminController@show');
+        Router::post('', 'App\Controller\Center\AdminController@store');
+        Router::patch('', 'App\Controller\Center\AdminController@update');
+        Router::delete('', 'App\Controller\Center\AdminController@delte');
+        Router::delete('/status', 'App\Controller\Center\AdminController@disable');
+        Router::delete('/password', 'App\Controller\Center\AdminController@resetPassword');
+        Router::delete('/role', 'App\Controller\Center\AdminController@AssigningRole');
     });
 
-    //Admin
+    //Permission
     Router::addGroup('/permission', function ()
     {
         Router::get('', 'App\Controller\Center\PermissionController@show');
+        Router::post('', 'App\Controller\Center\PermissionController@store');
+        Router::patch('', 'App\Controller\Center\PermissionController@update');
+        Router::delete('', 'App\Controller\Center\PermissionController@delete');
+    });
+
+    //Role
+    Router::addGroup('/role', function ()
+    {
+        Router::get('', 'App\Controller\Center\RoleController@show');
+        Router::post('', 'App\Controller\Center\RoleController@store');
+        Router::patch('', 'App\Controller\Center\RoleController@update');
+        Router::delete('', 'App\Controller\Center\RoleController@delete');
+        Router::patch('/permission', 'App\Controller\Center\RoleController@assigningPermission');
     });
 
 }, ['middleware' => [

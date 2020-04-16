@@ -44,7 +44,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 4,
                 'parent_id' => 1,
-                'url' => '/center/permissions/get',
+                'url' => '/center/permission/get',
                 'name' => '节点管理',
                 'display_name' => '节点管理',
                 'guard_name' => 'web',
@@ -61,7 +61,7 @@ class PermissionTableSeeder extends Seeder
             ], [
                 'id' => 6,
                 'parent_id' => 2,
-                'url' => '/center/admin/{id:\d+}/patch',
+                'url' => '/center/admin/patch',
                 'name' => '编辑用户',
                 'display_name' => '编辑用户',
                 'guard_name' => 'web',
@@ -78,7 +78,7 @@ class PermissionTableSeeder extends Seeder
             ], [
                 'id' => 8,
                 'parent_id' => 3,
-                'url' => '/center/role/{id:\d+}/patch',
+                'url' => '/center/role/patch',
                 'name' => '编辑角色',
                 'display_name' => '编辑角色',
                 'guard_name' => 'web',
@@ -86,6 +86,24 @@ class PermissionTableSeeder extends Seeder
             ],
             [
                 'id' => 9,
+                'parent_id' => 3,
+                'url' => '/center/role/delete',
+                'name' => '删除角色',
+                'display_name' => '删除角色',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 10,
+                'parent_id' => 3,
+                'url' => '/center/role/permission/patch',
+                'name' => '为角色分配权限',
+                'display_name' => '为角色分配权限',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 11,
                 'parent_id' => 4,
                 'url' => '/center/permission/post',
                 'name' => '新建节点',
@@ -94,18 +112,27 @@ class PermissionTableSeeder extends Seeder
                 'sort' => 0
             ],
             [
-                'id' => 10,
+                'id' => 12,
                 'parent_id' => 4,
-                'url' => '/center/permission/{id:\d+}/patch',
+                'url' => '/center/permission/patch',
                 'name' => '编辑节点',
                 'display_name' => '编辑节点',
                 'guard_name' => 'web',
                 'sort' => 0
             ],
             [
-                'id' => 11,
+                'id' => 13,
                 'parent_id' => 4,
-                'url' => '/center/admin/{id:\d+}/role/patch',
+                'url' => '/center/permission/delete',
+                'name' => '删除节点',
+                'display_name' => '删除节点',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 14,
+                'parent_id' => 4,
+                'url' => '/center/admin/role/patch',
                 'name' => '分配角色',
                 'display_name' => '分配角色',
                 'guard_name' => 'web',
@@ -115,9 +142,9 @@ class PermissionTableSeeder extends Seeder
         $role = \App\Model\Permission\Role::create([
             'name' => '超级管理员',
             'guard_name' => 'web',
-            'description'=>'超级管理员'
+            'description' => '超级管理员'
         ]);
-        $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
         $user = \App\Model\User\User::where('id', 1)->first();
         $user->assignRole($role);
     }

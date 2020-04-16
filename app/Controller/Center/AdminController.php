@@ -14,4 +14,34 @@ class AdminController extends BaseController
         $data = $this->getPaginateData(User::with('roles')->paginate());
         return $this->response->json(responseSuccess(200, '', $data));
     }
+
+    public function store()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
+
+    public function delete()
+    {
+
+    }
+
+    public function AssigningRole()
+    {
+
+    }
+
+    public function resetPassword()
+    {
+
+    }
+
+    public function disable()
+    {
+
+    }
 }
