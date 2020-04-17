@@ -7,6 +7,8 @@ namespace App\Model\User;
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
 use Donjan\Permission\Traits\HasRoles;
+use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\DbConnection\Db;
 
 /**
  * @property int $id
@@ -66,5 +68,16 @@ class User extends ModelBase implements ModelInterface
     {
         $this->password = md5('123456');
         $this->save();
+    }
+
+    public function changeDisablesStatus()
+    {
+        $this->status == self::DISABLES?$this->status=0:$this->status=self::DISABLES;
+        $this->save();
+    }
+
+    public function deleted(Deleted $event)
+    {
+        Db::table('model_has_roles')->where('model_id', $this->id)->delete();
     }
 }

@@ -74,10 +74,10 @@ Router::addGroup('/center', function ()
         Router::get('', 'App\Controller\Center\AdminController@show');
         Router::post('', 'App\Controller\Center\AdminController@store');
         Router::patch('', 'App\Controller\Center\AdminController@update');
-        Router::delete('', 'App\Controller\Center\AdminController@delte');
-        Router::delete('/status', 'App\Controller\Center\AdminController@disable');
-        Router::delete('/password', 'App\Controller\Center\AdminController@resetPassword');
-        Router::delete('/role', 'App\Controller\Center\AdminController@AssigningRole');
+        Router::delete('', 'App\Controller\Center\AdminController@delete');
+        Router::patch('/status', 'App\Controller\Center\AdminController@disable');
+        Router::patch('/password', 'App\Controller\Center\AdminController@resetPassword');
+        Router::patch('/role', 'App\Controller\Center\AdminController@AssigningRole');
     });
 
     //Permission

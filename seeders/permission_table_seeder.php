@@ -137,6 +137,42 @@ class PermissionTableSeeder extends Seeder
                 'display_name' => '分配角色',
                 'guard_name' => 'web',
                 'sort' => 0
+            ],
+            [
+                'id' => 15,
+                'parent_id' => 2,
+                'url' => '/center/admin/delete',
+                'name' => '删除用户',
+                'display_name' => '删除用户',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 16,
+                'parent_id' => 2,
+                'url' => '/center/admin/status/patch',
+                'name' => '修改用户禁用状态',
+                'display_name' => '修改用户禁用状态',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 17,
+                'parent_id' => 2,
+                'url' => '/center/admin/password/patch',
+                'name' => '重置用户密码',
+                'display_name' => '重置用户密码',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 18,
+                'parent_id' => 2,
+                'url' => '/center/admin/role/patch',
+                'name' => '为用户分配角色',
+                'display_name' => '为用户分配角色',
+                'guard_name' => 'web',
+                'sort' => 0
             ]
         ]);
         $role = \App\Model\Permission\Role::create([
@@ -144,7 +180,7 @@ class PermissionTableSeeder extends Seeder
             'guard_name' => 'web',
             'description' => '超级管理员'
         ]);
-        $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+        $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,15,16,17,18]);
         $user = \App\Model\User\User::where('id', 1)->first();
         $user->assignRole($role);
     }
