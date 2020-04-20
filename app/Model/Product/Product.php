@@ -6,6 +6,8 @@ namespace App\Model\Product;
 
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
+use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\DbConnection\Db;
 
 /**
  * @property int $id
@@ -46,5 +48,10 @@ class Product extends ModelBase implements ModelInterface
     public function skus()
     {
         return $this->hasMany(ProductSkus::class);
+    }
+
+    public function deleted(Deleted $event)
+    {
+        Db::table('product_skus')->where('product_id', $this->id)->delete();
     }
 }

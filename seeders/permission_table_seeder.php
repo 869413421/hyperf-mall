@@ -173,6 +173,69 @@ class PermissionTableSeeder extends Seeder
                 'display_name' => '为用户分配角色',
                 'guard_name' => 'web',
                 'sort' => 0
+            ],
+            [
+                'id' => 19,
+                'parent_id' => 1,
+                'url' => '/center/product/get',
+                'name' => '商品管理',
+                'display_name' => '商品管理',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 20,
+                'parent_id' => 19,
+                'url' => '/center/product/post',
+                'name' => '添加商品',
+                'display_name' => '添加商品',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 21,
+                'parent_id' => 19,
+                'url' => '/center/product/patch',
+                'name' => '更新商品',
+                'display_name' => '更新商品',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 22,
+                'parent_id' => 19,
+                'url' => '/center/product/delete',
+                'name' => '删除商品',
+                'display_name' => '删除商品',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 23,
+                'parent_id' => 19,
+                'url' => '/center/product/sku/post',
+                'name' => '添加商品库存',
+                'display_name' => '添加商品库存',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 24,
+                'parent_id' => 19,
+                'url' => '/center/product/sku/patch',
+                'name' => '更新商品',
+                'display_name' => '更新商品',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 25,
+                'parent_id' => 19,
+                'url' => '/center/product/sku/delete',
+                'name' => '删除商品',
+                'display_name' => '删除商品',
+                'guard_name' => 'web',
+                'sort' => 0
             ]
         ]);
         $role = \App\Model\Permission\Role::create([
@@ -180,7 +243,8 @@ class PermissionTableSeeder extends Seeder
             'guard_name' => 'web',
             'description' => '超级管理员'
         ]);
-        $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,15,16,17,18]);
+        $roleIdArr = \App\Model\Permission\Permission::query()->select('id')->pluck('id')->toArray();
+        $role->permissions()->sync($roleIdArr);
         $user = \App\Model\User\User::where('id', 1)->first();
         $user->assignRole($role);
     }

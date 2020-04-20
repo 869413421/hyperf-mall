@@ -99,6 +99,22 @@ Router::addGroup('/center', function ()
         Router::patch('/permission', 'App\Controller\Center\RoleController@assigningPermission');
     });
 
+    //Product
+    Router::addGroup('/product', function ()
+    {
+        Router::get('', 'App\Controller\Product\ProductController@show');
+        Router::post('', 'App\Controller\Product\ProductController@store');
+        Router::patch('', 'App\Controller\Product\ProductController@update');
+        Router::delete('', 'App\Controller\Product\ProductController@delete');
+
+        Router::addGroup('/sku', function ()
+        {
+            Router::post('', 'App\Controller\Product\ProductSkuController@store');
+            Router::patch('', 'App\Controller\Product\ProductSkuController@update');
+            Router::delete('', 'App\Controller\Product\ProductSkuController@delete');
+        });
+    });
+
 }, ['middleware' => [
     JwtAuthMiddleWare::class,
     PermissionMiddleware::class,

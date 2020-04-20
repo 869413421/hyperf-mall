@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->string('title', 200)->default('');
-            $table->text('description')->nullable();
+            $table->text('description')->nullable()->index();
             $table->string('image', 500)->default('');
             $table->tinyInteger('on_sale')->default(1);
             $table->float('rating')->default(5);
