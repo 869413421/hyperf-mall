@@ -4,7 +4,7 @@ use Hyperf\Database\Schema\Schema;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Migrations\Migration;
 
-class CreateProductSkusTable extends Migration
+class CreateProductSkuTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateProductSkusTable extends Migration
             $table->timestamps();
             $table->string('title', 200)->default('');
             $table->text('description')->nullable();
-            $table->decimal('price');
+            $table->decimal('price',10, 2);
             $table->unsignedInteger('stock');
             $table->unsignedInteger('product_id')->index();
         });

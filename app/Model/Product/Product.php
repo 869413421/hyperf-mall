@@ -47,7 +47,7 @@ class Product extends ModelBase implements ModelInterface
 
     public function skus()
     {
-        return $this->hasMany(ProductSkus::class);
+        return $this->hasMany(ProductSku::class);
     }
 
     public function deleted(Deleted $event)

@@ -4,10 +4,13 @@ declare (strict_types=1);
 
 namespace App\Model\User;
 
+use App\Model\CartItem;
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
+use App\Model\Product\Product;
 use Donjan\Permission\Traits\HasRoles;
 use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\Database\Query\Builder;
 use Hyperf\DbConnection\Db;
 
 /**
@@ -72,12 +75,27 @@ class User extends ModelBase implements ModelInterface
 
     public function changeDisablesStatus()
     {
-        $this->status == self::DISABLES?$this->status=0:$this->status=self::DISABLES;
+        $this->status == self::DISABLES ? $this->status = 0 : $this->status = self::DISABLES;
         $this->save();
     }
 
     public function deleted(Deleted $event)
     {
         Db::table('model_has_roles')->where('model_id', $this->id)->delete();
+    }
+
+    /**
+     * @return Builder
+     */
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'user_favorite_products')
+            ->withTimestamps()
+            ->orderBy('user_favorite_products.created_at', 'desc');
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

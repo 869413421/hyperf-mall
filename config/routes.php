@@ -50,6 +50,9 @@ Router::addGroup('', function ()
         Router::patch('/password', 'App\Controller\User\UserController@resetPassword');
     });
 
+    Router::get('/product', 'App\Controller\Product\ProductController@index');
+    Router::get('/product/{id}', 'App\Controller\Product\ProductController@show');
+
 });
 //用户访问路由
 Router::addGroup('/user', function ()
@@ -63,6 +66,15 @@ Router::addGroup('/user', function ()
     Router::post('/addresses', 'App\Controller\User\UserAddressesController@store');
     Router::patch('/addresses', 'App\Controller\User\UserAddressesController@update');
     Router::delete('/addresses', 'App\Controller\User\UserAddressesController@delete');
+
+    Router::get('/product/collect', 'App\Controller\Product\ProductController@favorites');
+    Router::post('/product/collect', 'App\Controller\Product\ProductController@favor');
+    Router::delete('/product/collect', 'App\Controller\Product\ProductController@detach');
+
+    Router::get('/cart', 'App\Controller\CartController@index');
+    Router::post('/cart', 'App\Controller\CartController@store');
+    Router::delete('/cart', 'App\Controller\CartController@delete');
+
 }, ['middleware' => $authMiddleWare]);
 
 //
@@ -102,7 +114,8 @@ Router::addGroup('/center', function ()
     //Product
     Router::addGroup('/product', function ()
     {
-        Router::get('', 'App\Controller\Product\ProductController@show');
+        Router::get('', 'App\Controller\Product\ProductController@index');
+
         Router::post('', 'App\Controller\Product\ProductController@store');
         Router::patch('', 'App\Controller\Product\ProductController@update');
         Router::delete('', 'App\Controller\Product\ProductController@delete');

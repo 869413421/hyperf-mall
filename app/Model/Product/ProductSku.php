@@ -17,7 +17,7 @@ use App\Model\ModelInterface;
  * @property int $stock
  * @property int $product_id
  */
-class ProductSkus extends ModelBase implements ModelInterface
+class ProductSku extends ModelBase implements ModelInterface
 {
     /**
      * The table associated with the model.

@@ -16,13 +16,13 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->string('title', 200)->default('');
-            $table->text('description')->nullable()->index();
+            $table->text('description')->nullable();
             $table->string('image', 500)->default('');
             $table->tinyInteger('on_sale')->default(1);
             $table->float('rating')->default(5);
             $table->unsignedInteger('sold_count')->default(0);
             $table->unsignedInteger('review_count')->default(0);
-            $table->decimal('price');
+            $table->decimal('price', 10, 2);
         });
     }
 
