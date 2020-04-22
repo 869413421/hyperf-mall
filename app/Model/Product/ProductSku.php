@@ -4,6 +4,7 @@ declare (strict_types=1);
 
 namespace App\Model\Product;
 
+use App\Exception\ServiceException;
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
 
@@ -43,5 +44,25 @@ class ProductSku extends ModelBase implements ModelInterface
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function decreaseStock(int $amount)
+    {
+        if ($amount <= 0)
+        {
+            throw new ServiceException(403, '库存不能减少0');
+        }
+
+        return $this->newQuery()->where('id', $this->id)->where('stock', '>=', $amount)->decrement('stock', $amount);
+    }
+
+    public function addStock(int $amount)
+    {
+        if ($amount <= 0)
+        {
+            throw new ServiceException(403, '库存不能减少0');
+        }
+
+        return $this->increment('stock', $amount);
     }
 }

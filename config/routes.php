@@ -75,6 +75,9 @@ Router::addGroup('/user', function ()
     Router::post('/cart', 'App\Controller\CartController@store');
     Router::delete('/cart', 'App\Controller\CartController@delete');
 
+    Router::get('/order', 'App\Controller\OrderController@index');
+    Router::post('/order', 'App\Controller\OrderController@store');
+
 }, ['middleware' => $authMiddleWare]);
 
 //

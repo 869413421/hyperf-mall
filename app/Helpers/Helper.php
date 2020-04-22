@@ -133,3 +133,11 @@ if (!function_exists('response'))
         return container()->get(ResponseInterface::class);
     }
 }
+
+if (!function_exists('getUUID'))
+{
+    function getUUID($prefix = '')
+    {
+        return $prefix . '_' . uniqid(date('YmdHis'));
+    }
+}
