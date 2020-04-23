@@ -23,11 +23,6 @@ class RedisUtil
         $this->redis = $this->container->get(Redis::class);
     }
 
-    public function setPool($pool)
-    {
-        $this->redis = $this->container->get(RedisFactory::class)->get($pool);
-    }
-
     public function set($key, $value, $ttl = 300)
     {
         return $this->redis->setex($key, $ttl, $value);

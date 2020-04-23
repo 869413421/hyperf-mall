@@ -48,6 +48,9 @@ class OrderItem extends ModelBase implements ModelInterface
         return $this->belongsTo(Product::class);
     }
 
+    /***
+     * @return \Hyperf\Database\Model\Relations\BelongsTo
+     */
     public function productSku()
     {
         return $this->belongsTo(ProductSku::class);

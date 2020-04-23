@@ -15,10 +15,17 @@ use App\Model\User\User;
 use App\Model\User\UserAddress;
 use Carbon\Carbon;
 use Hyperf\DbConnection\Db;
+use Hyperf\Di\Annotation\Inject;
 
 class OrderService
 {
-    public function createOrder(User $user, $orderData)
+    /**
+     * @Inject()
+     * @var OrderQueueService
+     */
+    private $orderQueueService;
+
+    public function createOrder(User $user, $orderData): Order
     {
         $order = Db::transaction(function () use ($user, $orderData)
         {
@@ -64,6 +71,7 @@ class OrderService
             }
 
             $order->update(['total_amount' => $totalAmount]);
+            $this->orderQueueService->pushCloseOrderJod($order, 10);
             $user->cartItems()->whereIn('product_sku_id', $skuIds)->delete();
 
             return $order;

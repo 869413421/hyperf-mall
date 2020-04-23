@@ -7,6 +7,7 @@ namespace App\Model\User;
 use App\Model\CartItem;
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
+use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Donjan\Permission\Traits\HasRoles;
 use Hyperf\Database\Model\Events\Deleted;
@@ -101,5 +102,10 @@ class User extends ModelBase implements ModelInterface
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
     }
 }

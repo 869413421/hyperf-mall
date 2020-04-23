@@ -46,7 +46,7 @@ class ProductSku extends ModelBase implements ModelInterface
         return $this->belongsTo(Product::class);
     }
 
-    public function decreaseStock(int $amount)
+    public function decreaseStock(int $amount): int
     {
         if ($amount <= 0)
         {
@@ -56,13 +56,13 @@ class ProductSku extends ModelBase implements ModelInterface
         return $this->newQuery()->where('id', $this->id)->where('stock', '>=', $amount)->decrement('stock', $amount);
     }
 
-    public function addStock(int $amount)
+    public function addStock(int $amount): int
     {
         if ($amount <= 0)
         {
-            throw new ServiceException(403, '库存不能减少0');
+            throw new ServiceException(403, '库存不能增加0');
         }
-
-        return $this->increment('stock', $amount);
+        var_dump($amount);
+        return $this->newQuery()->where('id', $this->id)->increment('stock', $amount);
     }
 }

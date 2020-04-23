@@ -7,6 +7,7 @@ namespace App\Model\Order;
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
 use App\Model\User\User;
+use Hyperf\Database\Model\Events\Creating;
 
 /**
  * @property int $id
@@ -102,7 +103,7 @@ class Order extends ModelBase implements ModelInterface
         return $this->hasMany(OrderItem::class);
     }
 
-    public function boot(): void
+    public function creating(Creating $event)
     {
         if (!$this->no)
         {
