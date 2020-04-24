@@ -50,6 +50,8 @@ Router::addGroup('', function ()
         Router::patch('/password', 'App\Controller\User\UserController@resetPassword');
     });
 
+    Router::get('/pay/web', 'App\Controller\PayController@index');
+
     Router::get('/product', 'App\Controller\Product\ProductController@index');
     Router::get('/product/{id}', 'App\Controller\Product\ProductController@show');
 

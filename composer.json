@@ -32,7 +32,7 @@
         "hyperf/service-governance": "~1.1.0",
         "hyperf/config-apollo": "~1.1.0",
         "hyperf/constants": "^1.1",
-        "hyperf/async-queue": "~1.1.0",
+        "hyperf/async-queue": "^1.1",
         "hyperf/amqp": "~1.1.0",
         "hyperf/model-cache": "~1.1.0",
         "hyperf/elasticsearch": "~1.1.0",
@@ -49,7 +49,8 @@
         "hyperf/filesystem": "^1.1",
         "donjan-deng/hyperf-permission": "~1.0",
         "firstphp/wsdebug": "^1.1",
-        "hyperf/websocket-server": "^1.1"
+        "hyperf/websocket-server": "^1.1",
+        "yansongda/pay": "^2.9"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -27,6 +28,6 @@ return [
             LogLevel::WARNING,
         ],
     ],
-    'storage_path'=>'/hyperf-skeleton/storage/upload/',
-    'host'=>'http://47.94.155.227:39002/'
+    'storage_path' => '/hyperf-skeleton/storage/upload/',
+    'host' => 'http://47.94.155.227:39002/'
 ];

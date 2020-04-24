@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\Order\Order;
 use App\Model\User\User;
 use App\Request\OrderRequest;
 use App\Services\OrderService;
-use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
 class OrderController extends BaseController
