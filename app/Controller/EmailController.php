@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Email;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Model\User;
-use App\Request\Email\EmailRequest;
+use App\Request\EmailRequest;
 use App\Services\UserService;
 use Hyperf\Di\Annotation\Inject;
 

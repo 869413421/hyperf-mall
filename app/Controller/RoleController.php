@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Center;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Exception\ServiceException;
-use App\Request\Center\Role\RoleRequest;
+use App\Request\RoleRequest;
 use Donjan\Permission\Models\Role;
 
 class RoleController extends BaseController

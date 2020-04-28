@@ -2,12 +2,7 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Order;
-
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
-use App\Model\Product\Product;
-use App\Model\Product\ProductSku;
+namespace App\Model;
 
 /**
  * @property int $id

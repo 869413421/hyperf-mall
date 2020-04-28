@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Request\Token;
+namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class TokenRequest extends FormRequest
+class FileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,23 +23,19 @@ class TokenRequest extends FormRequest
     {
         switch ($this->path())
         {
-            case 'user/token':
-                return $this->getUserTokenRules();
+            case 'user/avatar':
+                return $this->getUserAvatarRules();
         }
     }
 
-    private function getUserTokenRules(): array
+    private function getUserAvatarRules(): array
     {
         switch ($this->getMethod())
         {
             case 'POST':
-                $rules = [
-                    'phone' => 'required_without:email',
-                    'email' => 'required_without:phone|email',
-                    'password' => 'required',
+                return [
+                    'avatar' => 'required|dimensions:min_width=100,min_height=200'
                 ];
-
-                return $rules;
                 break;
         }
     }

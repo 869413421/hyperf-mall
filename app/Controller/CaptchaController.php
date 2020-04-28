@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Captcha;
+namespace App\Controller;
 
-use App\Request\Captcha\CaptchaRequest;
+use App\Request\CaptchaRequest;
 use App\Utils\RedisUtil;
 use Gregwar\Captcha\CaptchaBuilder;
 use Hyperf\Di\Annotation\Inject;

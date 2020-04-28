@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Request\Center\Role;
+namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;

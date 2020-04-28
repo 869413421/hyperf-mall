@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\User;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Exception\ServiceException;
 use App\Model\UserAddress;
 use App\Request\UserAddressesRequest;

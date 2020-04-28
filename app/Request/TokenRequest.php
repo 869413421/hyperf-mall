@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Request\Email;
+namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class EmailRequest extends FormRequest
+class TokenRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,26 +23,23 @@ class EmailRequest extends FormRequest
     {
         switch ($this->path())
         {
-            case 'user/email':
-                return $this->getUserEmailRules();
+            case 'user/token':
+                return $this->getUserTokenRules();
         }
     }
 
-    private function getUserEmailRules(): array
+    private function getUserTokenRules(): array
     {
         switch ($this->getMethod())
         {
-            case'GET':
-                return [
-                    'token' => 'required|string|max:16',
-                    'userId' => 'required|exists:users,id'
-                ];
-                break;
-
             case 'POST':
-                return [
-                    'email' => 'required|email|exists:users',
-                ];;
+                $rules = [
+                    'phone' => 'required_without:email',
+                    'email' => 'required_without:phone|email',
+                    'password' => 'required',
+                ];
+
+                return $rules;
                 break;
         }
     }

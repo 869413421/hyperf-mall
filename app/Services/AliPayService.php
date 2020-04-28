@@ -10,7 +10,7 @@ namespace App\Services;
 
 use App\Exception\ServiceException;
 use App\Handler\Pay\PayFactory;
-use App\Model\Order\Order;
+use App\Model\Order;
 use Carbon\Carbon;
 
 class AliPayService

@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Product;
+namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Model\Product\ProductSku;
-use App\Request\Product\ProductRequest;
-use App\Request\Product\ProductSkuRequest;
+use App\Model\ProductSku;
+use App\Request\ProductRequest;
+use App\Request\ProductSkuRequest;
 
 class ProductSkuController extends BaseController
 {

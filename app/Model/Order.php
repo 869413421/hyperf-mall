@@ -2,11 +2,8 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Order;
+namespace App\Model;
 
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
-use App\Model\User;
 use Hyperf\Database\Model\Events\Creating;
 
 /**

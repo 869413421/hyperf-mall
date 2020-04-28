@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Request\File;
+namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class FileRequest extends FormRequest
+class EmailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,19 +23,26 @@ class FileRequest extends FormRequest
     {
         switch ($this->path())
         {
-            case 'user/avatar':
-                return $this->getUserAvatarRules();
+            case 'user/email':
+                return $this->getUserEmailRules();
         }
     }
 
-    private function getUserAvatarRules(): array
+    private function getUserEmailRules(): array
     {
         switch ($this->getMethod())
         {
+            case'GET':
+                return [
+                    'token' => 'required|string|max:16',
+                    'userId' => 'required|exists:users,id'
+                ];
+                break;
+
             case 'POST':
                 return [
-                    'avatar' => 'required|dimensions:min_width=100,min_height=200'
-                ];
+                    'email' => 'required|email|exists:users',
+                ];;
                 break;
         }
     }

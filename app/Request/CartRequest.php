@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Request;
 
-use App\Model\Product\ProductSku;
+use App\Model\ProductSku;
 use Hyperf\Validation\Request\FormRequest;
 
 class CartRequest extends FormRequest

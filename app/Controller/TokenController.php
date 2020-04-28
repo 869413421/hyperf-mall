@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Token;
+namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Request\Token\TokenRequest;
+use App\Request\TokenRequest;
 use App\Services\UserService;
 use Hyperf\Di\Annotation\Inject;
 use Phper666\JwtAuth\Jwt;

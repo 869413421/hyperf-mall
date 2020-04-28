@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Sms;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Handler\Sms\SmsInterface;
-use App\Request\Sms\SmsRequest;
+use App\Request\SmsRequest;
 use App\Utils\RedisUtil;
 use Hyperf\Di\Annotation\Inject;
 

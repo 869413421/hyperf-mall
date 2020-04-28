@@ -10,7 +10,7 @@ namespace App\Services;
 
 
 use App\Job\CloseOrderJob;
-use App\Model\Order\Order;
+use App\Model\Order;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\Driver\DriverInterface;
 

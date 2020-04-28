@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Constants\ResponesCode;
 use App\Constants\ResponseCode;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;

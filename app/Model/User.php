@@ -4,8 +4,6 @@ declare (strict_types=1);
 
 namespace App\Model;
 
-use App\Model\Order\Order;
-use App\Model\Product\Product;
 use Donjan\Permission\Traits\HasRoles;
 use Hyperf\Database\Model\Events\Deleted;
 use Hyperf\Database\Query\Builder;

@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\File;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Handler\File\FileUploadHandler;
-use App\Request\File\FileRequest;
+use App\Request\FileRequest;
 
 class FileController extends BaseController
 {

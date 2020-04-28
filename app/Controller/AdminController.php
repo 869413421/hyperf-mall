@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Center;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Exception\ServiceException;
-use App\Model\Permission\Role;
+use App\Model\Role;
 use App\Model\User;
-use App\Request\Center\Admin\AdminRequest;
+use App\Request\AdminRequest;
 
 class AdminController extends BaseController
 {

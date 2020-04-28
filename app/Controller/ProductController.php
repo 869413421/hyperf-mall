@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Product;
+namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Exception\ServiceException;
-use App\Model\Product\Product;
+use App\Model\Product;
 use App\Model\User;
-use App\Request\Product\FavorRequest;
-use App\Request\Product\ProductRequest;
+use App\Request\FavorRequest;
+use App\Request\ProductRequest;
 
 class ProductController extends BaseController
 {

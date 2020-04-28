@@ -9,8 +9,8 @@
 namespace App\Services;
 
 use App\Exception\ServiceException;
-use App\Model\Order\Order;
-use App\Model\Product\ProductSku;
+use App\Model\Order;
+use App\Model\ProductSku;
 use App\Model\User;
 use App\Model\UserAddress;
 use Carbon\Carbon;
@@ -52,7 +52,7 @@ class OrderService
                 $skuIds[] = $data['sku_id'];
                 $productSku = ProductSku::getFirstById($data['sku_id']);
 
-                /**@var $item \App\Model\Order\OrderItem * */
+                /**@var $item \App\Model\OrderItem * */
                 $item = $order->items()->make([
                     'price' => $productSku->price,
                     'amount' => $data['amount'],

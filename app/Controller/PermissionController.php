@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Center;
+namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Model\Permission\Permission;
-use App\Request\Center\Permission\PermissionRequest;
+use App\Model\Permission;
+use App\Request\PermissionRequest;
 
 class PermissionController extends BaseController
 {

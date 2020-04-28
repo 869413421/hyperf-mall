@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Request;
 
-use App\Model\Product\ProductSku;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;

@@ -2,11 +2,9 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Product;
+namespace App\Model;
 
 use App\Exception\ServiceException;
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
 
 /**
  * @property int $id
