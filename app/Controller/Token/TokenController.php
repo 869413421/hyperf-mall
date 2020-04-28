@@ -6,7 +6,7 @@ namespace App\Controller\Token;
 
 use App\Controller\BaseController;
 use App\Request\Token\TokenRequest;
-use App\Services\User\UserService;
+use App\Services\UserService;
 use Hyperf\Di\Annotation\Inject;
 use Phper666\JwtAuth\Jwt;
 

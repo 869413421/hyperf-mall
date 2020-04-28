@@ -2,7 +2,7 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Permission;
+namespace App\Model;
 
 
 use Hyperf\Database\Model\Events\Deleted;

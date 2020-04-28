@@ -245,7 +245,7 @@ class PermissionTableSeeder extends Seeder
         ]);
         $roleIdArr = \App\Model\Permission\Permission::query()->select('id')->pluck('id')->toArray();
         $role->permissions()->sync($roleIdArr);
-        $user = \App\Model\User\User::where('id', 1)->first();
+        $user = \App\Model\User::where('id', 1)->first();
         $user->assignRole($role);
     }
 }

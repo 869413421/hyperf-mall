@@ -13,7 +13,7 @@ class UserTableSeeder extends Seeder
      */
     public static function createData()
     {
-        \App\Model\User\User::query()->create([
+        \App\Model\User::query()->create([
             'user_name' => 'admin',
             'email' => '13528685024@163.com',
             'password' => md5('123456'),

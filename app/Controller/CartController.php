@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 
-use App\Model\User\User;
+use App\Model\User;
 use App\Request\CartRequest;
 use App\Services\CartService;
 use Hyperf\Di\Annotation\Inject;

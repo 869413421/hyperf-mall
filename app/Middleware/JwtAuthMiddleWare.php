@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Constants\ResponseCode;
-use App\Model\User\User;
+use App\Model\User;
 use Hyperf\Utils\Context;
 use Phper666\JwtAuth\Exception\TokenValidException;
 use Phper666\JwtAuth\Jwt;

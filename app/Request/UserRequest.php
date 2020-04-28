@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Request\User;
+namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 

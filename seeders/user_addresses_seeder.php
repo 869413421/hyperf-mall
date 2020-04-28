@@ -15,9 +15,9 @@ class UserAddressesSeeder extends Seeder
     {
         for ($i = 0; $i < 50; $i++)
         {
-            $user = \App\Model\User\User::query()->inRandomOrder()->first();
+            $user = \App\Model\User::query()->inRandomOrder()->first();
 
-            \App\Model\User\UserAddress::query()->create(
+            \App\Model\UserAddress::query()->create(
                 [
                     'user_id' => $user->id,
                     'province' => \Hyperf\Utils\Str::random(5),

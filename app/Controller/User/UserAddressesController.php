@@ -6,8 +6,8 @@ namespace App\Controller\User;
 
 use App\Controller\BaseController;
 use App\Exception\ServiceException;
-use App\Model\User\UserAddress;
-use App\Request\User\UserAddressesRequest;
+use App\Model\UserAddress;
+use App\Request\UserAddressesRequest;
 use Carbon\Carbon;
 
 
@@ -15,7 +15,7 @@ class UserAddressesController extends BaseController
 {
     public function show()
     {
-        /**@var $user \App\Model\User\User * */
+        /**@var $user \App\Model\User * */
         $user = $this->request->getAttribute('user');
 
         $data = $this->getPaginateData(UserAddress::getList(['user_id' => $user->id]));
@@ -24,7 +24,7 @@ class UserAddressesController extends BaseController
 
     public function store(UserAddressesRequest $request)
     {
-        /**@var $user \App\Model\User\User * */
+        /**@var $user \App\Model\User * */
         $user = $this->request->getAttribute('user');
 
         $data = $request->validated();
@@ -37,7 +37,7 @@ class UserAddressesController extends BaseController
 
     public function update(UserAddressesRequest $request)
     {
-        /**@var $user \App\Model\User\User * */
+        /**@var $user \App\Model\User * */
         $user = $this->request->getAttribute('user');
 
         $data = $request->validated();
@@ -55,7 +55,7 @@ class UserAddressesController extends BaseController
 
     public function delete(UserAddressesRequest $request)
     {
-        /**@var $user \App\Model\User\User * */
+        /**@var $user \App\Model\User * */
         $user = $this->request->getAttribute('user');
 
         $data = $request->validated();

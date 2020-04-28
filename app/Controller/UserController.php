@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\User;
+namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Request\User\UserRequest;
-use App\Services\User\UserService;
+use App\Request\UserRequest;
+use App\Services\UserService;
 use Hyperf\Di\Annotation\Inject;
 
 

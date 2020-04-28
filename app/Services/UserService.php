@@ -6,13 +6,13 @@
  * Time: 17:25
  */
 
-namespace App\Services\User;
+namespace App\Services;
 
 
 use App\Exception\UserServiceException;
 use App\Handler\Email\EmailMessageInterface;
 use App\Handler\Sms\SmsInterface;
-use App\Model\User\User;
+use App\Model\User;
 use App\Utils\RedisUtil;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;

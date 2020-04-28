@@ -2,11 +2,8 @@
 
 declare (strict_types=1);
 
-namespace App\Model\User;
+namespace App\Model;
 
-use App\Model\CartItem;
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Donjan\Permission\Traits\HasRoles;

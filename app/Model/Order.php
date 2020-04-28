@@ -6,7 +6,7 @@ namespace App\Model\Order;
 
 use App\Model\ModelBase;
 use App\Model\ModelInterface;
-use App\Model\User\User;
+use App\Model\User;
 use Hyperf\Database\Model\Events\Creating;
 
 /**

@@ -2,7 +2,7 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Permission;
+namespace App\Model;
 
 
 class Role extends \Donjan\Permission\Models\Role

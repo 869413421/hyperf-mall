@@ -2,10 +2,7 @@
 
 declare (strict_types=1);
 
-namespace App\Model\User;
-
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
+namespace App\Model;
 
 /**
  * @property int $id

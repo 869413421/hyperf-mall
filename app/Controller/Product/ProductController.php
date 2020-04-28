@@ -7,7 +7,7 @@ namespace App\Controller\Product;
 use App\Controller\BaseController;
 use App\Exception\ServiceException;
 use App\Model\Product\Product;
-use App\Model\User\User;
+use App\Model\User;
 use App\Request\Product\FavorRequest;
 use App\Request\Product\ProductRequest;
 

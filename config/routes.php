@@ -19,27 +19,25 @@ $authMiddleWare = [
     JwtAuthMiddleWare::class,
 ];
 
-Router::addServer('ws', function ()
-{
-    Router::get('/', Firstphp\Wsdebug\Wsdebug::class);
-});
-
 //游客访问路由
 Router::addGroup('', function ()
 {
+    //用户注册
+    Router::post('/user', 'App\Controller\UserController@store');
+
     Router::get('/captcha', 'App\Controller\Captcha\CaptchaController@show');
     Router::addGroup('/sms', function ()
     {
         Router::post('', 'App\Controller\Sms\SmsController@store');
     });
+
     //User
     Router::addGroup('/user', function ()
     {
         Router::get('/email', 'App\Controller\Email\EmailController@verifyEmail');
         Router::post('/email', 'App\Controller\Email\EmailController@sendVerifyEmail');
-        Router::post('', 'App\Controller\User\UserController@store');
         Router::post('/token', 'App\Controller\Token\TokenController@store');
-        Router::patch('/password', 'App\Controller\User\UserController@resetPassword');
+        Router::patch('/password', 'App\Controller\UserController@resetPassword');
     });
 
     Router::get('/product', 'App\Controller\Product\ProductController@index');
@@ -51,8 +49,8 @@ Router::addGroup('', function ()
 //用户访问路由
 Router::addGroup('/user', function ()
 {
-    Router::patch('', 'App\Controller\User\UserController@update');
-    Router::delete('', 'App\Controller\User\UserController@delete');
+    Router::patch('', 'App\Controller\UserController@update');
+    Router::delete('', 'App\Controller\UserController@delete');
     Router::post('/avatar', 'App\Controller\File\FileController@uploadAvatar');
     Router::patch('/token', 'App\Controller\Token\TokenController@update');
     Router::delete('/token', 'App\Controller\Token\TokenController@delete');

@@ -2,10 +2,8 @@
 
 declare (strict_types=1);
 
-namespace App\Model\Product;
+namespace App\Model;
 
-use App\Model\ModelBase;
-use App\Model\ModelInterface;
 use Hyperf\Database\Model\Events\Deleted;
 use Hyperf\DbConnection\Db;
 

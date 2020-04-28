@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\User\User;
+use App\Model\User;
 use App\Request\OrderRequest;
 use App\Services\OrderService;
 use Hyperf\Di\Annotation\Inject;

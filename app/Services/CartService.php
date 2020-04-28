@@ -10,7 +10,7 @@ namespace App\Services;
 
 
 use App\Model\CartItem;
-use App\Model\User\User;
+use App\Model\User;
 
 class CartService
 {

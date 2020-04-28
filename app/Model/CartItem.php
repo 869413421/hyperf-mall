@@ -6,7 +6,7 @@ namespace App\Model;
 
 use App\Model\Product\Product;
 use App\Model\Product\ProductSku;
-use App\Model\User\User;
+use App\Model\User;
 
 /**
  * @property int $id
