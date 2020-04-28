@@ -19,14 +19,6 @@ $authMiddleWare = [
     JwtAuthMiddleWare::class,
 ];
 
-//debug
-Router::addRoute(['GET', 'POST', 'HEAD'], '/wsdebug', function ()
-{
-    $wsdebug = new \Firstphp\Wsdebug\Wsdebug();
-    $response = new \Hyperf\HttpServer\Response();
-    return $response->raw($wsdebug->getHtml())->withHeader('content-type', 'text/html; charset=utf-8');
-});
-
 Router::addServer('ws', function ()
 {
     Router::get('/', Firstphp\Wsdebug\Wsdebug::class);
