@@ -37,11 +37,7 @@ class SmsController extends BaseController
         }
 
         $sendCode = str_pad((string)mt_rand(000000, 999999), 6, '0');
-        if (!$this->service->send($phone, ['code' => $sendCode]))
-        {
-            return $this->response->json(responseError(204, '短信发送失败'));
-        }
-
+        $this->service->send($phone, ['code' => $sendCode]);
         $this->redis->del($sessionKey);
         $this->redis->set($phone, $sendCode, 300);
         return $this->response->json(responseSuccess());

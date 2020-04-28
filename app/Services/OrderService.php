@@ -71,7 +71,7 @@ class OrderService
             }
 
             $order->update(['total_amount' => $totalAmount]);
-            $this->orderQueueService->pushCloseOrderJod($order, 10);
+            $this->orderQueueService->pushCloseOrderJod($order, 500);
             $user->cartItems()->whereIn('product_sku_id', $skuIds)->delete();
 
             return $order;

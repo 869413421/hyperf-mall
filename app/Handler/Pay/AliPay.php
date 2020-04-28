@@ -28,4 +28,14 @@ class AliPay implements PayInterface
             'subject' => $subject
         ])->send();
     }
+
+    public function verify($data = null)
+    {
+        return $this->pay->verify($data);
+    }
+
+    public function success()
+    {
+        return $this->pay->success();
+    }
 }

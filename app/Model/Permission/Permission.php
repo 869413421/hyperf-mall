@@ -21,6 +21,7 @@ class Permission extends \Donjan\Permission\Models\Permission
 
     public function deleted(Deleted $event)
     {
+        parent::deleted($event);
         Db::table('role_has_permissions')->where('permission_id', $this->id)->delete();
     }
 }

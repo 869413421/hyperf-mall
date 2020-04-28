@@ -50,10 +50,10 @@ Router::addGroup('', function ()
         Router::patch('/password', 'App\Controller\User\UserController@resetPassword');
     });
 
-    Router::get('/pay/web', 'App\Controller\PayController@index');
-
     Router::get('/product', 'App\Controller\Product\ProductController@index');
     Router::get('/product/{id}', 'App\Controller\Product\ProductController@show');
+    Router::get('/ali/pay/web', 'App\Controller\AliPayController@aliPayReturn');
+    Router::post('/ali/pay/web/service', 'App\Controller\AliPayController@aliPayNotify');
 
 });
 //用户访问路由
@@ -79,6 +79,8 @@ Router::addGroup('/user', function ()
 
     Router::get('/order', 'App\Controller\OrderController@index');
     Router::post('/order', 'App\Controller\OrderController@store');
+
+    Router::post('/order/ali/pay/web', 'App\Controller\AliPayController@store');
 
 }, ['middleware' => $authMiddleWare]);
 

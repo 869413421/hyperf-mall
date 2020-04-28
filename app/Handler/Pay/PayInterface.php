@@ -18,4 +18,15 @@ interface PayInterface
      * @return mixed
      */
     public function webPay(string $no, float $total_amount, string $subject);
+
+    /**
+     * @return array
+     */
+    public function verify($data = null);
+
+    /**
+     * 向服务器发送成功回调
+     * @return mixed
+     */
+    public function success();
 }

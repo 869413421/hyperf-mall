@@ -11,7 +11,7 @@ namespace App\Handler\Pay;
 
 use Yansongda\Pay\Pay;
 
-class WechatPay implements PayInterface
+class WeChatPay implements PayInterface
 {
     private $pay;
 
@@ -27,5 +27,15 @@ class WechatPay implements PayInterface
             'total_amount' => $total_amount,
             'subject' => $subject
         ]);
+    }
+
+    public function verify($data = null)
+    {
+        // TODO: Implement verify() method.
+    }
+
+    public function success()
+    {
+        // TODO: Implement success() method.
     }
 }
