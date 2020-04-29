@@ -122,7 +122,7 @@ class UserService
         }
 
         $key = 'userID.' . $user->id;
-        $checkToken = $this->redis->get($key);
+        $checkToken = Redis::get($key);
 
         if (!$checkToken)
         {

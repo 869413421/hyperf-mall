@@ -8,8 +8,6 @@
 
 namespace App\Handler\Email;
 
-
-use Hyperf\Validation\ValidationException;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 

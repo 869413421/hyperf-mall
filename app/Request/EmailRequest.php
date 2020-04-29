@@ -21,11 +21,8 @@ class EmailRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->path())
-        {
-            case 'user/email':
-                return $this->getUserEmailRules();
-        }
+
+        return $this->getUserEmailRules();
     }
 
     private function getUserEmailRules(): array
@@ -42,7 +39,7 @@ class EmailRequest extends FormRequest
             case 'POST':
                 return [
                     'email' => 'required|email|exists:users',
-                ];;
+                ];
                 break;
         }
     }
