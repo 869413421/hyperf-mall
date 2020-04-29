@@ -25,7 +25,7 @@ class EmailQueueService
         $this->driver = $driverFactory->get('default');
     }
 
-    public function pushSendVerifyEmailJob(User $user, int $delay): bool
+    public function pushSendVerifyEmailJob(User $user, int $delay = 0): bool
     {
         return $this->driver->push(new SendVerifyEmailJob($user), $delay);
     }

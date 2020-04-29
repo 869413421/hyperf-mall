@@ -14,10 +14,8 @@ use App\Facade\Redis;
 use App\Handler\Email\EmailMessageInterface;
 use App\Handler\Sms\SmsInterface;
 use App\Model\User;
-
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\Str;
 use Phper666\JwtAuth\Jwt;
 
 class UserService
@@ -41,6 +39,12 @@ class UserService
     private $smsHandler;
 
     /**
+     * @Inject()
+     * @var EmailQueueService
+     */
+    private $emailQueueService;
+
+    /**
      * 注册
      * @param $data *注册数据
      * @return User *注册成功用户实体
@@ -58,7 +62,7 @@ class UserService
                 throw new UserServiceException(422, '短信验证码错误');
             }
         }
-        
+
         $user = new User();
         $user->fill($data);
         $user->save();
@@ -97,22 +101,7 @@ class UserService
             throw new UserServiceException(403, '账号已经激活');
         }
 
-        $token = Str::random(16);
-        $subject = '验证邮件';
-
-        $verifyRoute = env('HTTP_TYPE') . "://" . env('SERVER_HOST') . "/email?token={$token}&userId={$user->id}";
-        $body = "亲爱的" . $user->user_name . "：<br/>感谢您在我站注册了新帐号。<br/>请点击链接激活您的帐号。<br/> 
-    <a href='{$verifyRoute}' target= 
-'_blank'>{$verifyRoute}</a><br/> 
-    如果以上链接无法点击，请将它复制到你的浏览器地址栏中进入访问，该链接24小时内有效。";
-        $this->emailHandler->subject($subject);
-        $this->emailHandler->body($body);
-        $this->emailHandler->address($user->email);
-        $this->emailHandler->isHtml(true);
-        $this->emailHandler->send();
-
-        $key = 'userID.' . $user->id;
-        $this->redis->set($key, $token);
+        $this->emailQueueService->pushSendVerifyEmailJob($user, 0);
     }
 
 

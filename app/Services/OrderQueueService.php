@@ -26,7 +26,7 @@ class OrderQueueService
         $this->driver = $driverFactory->get('default');
     }
 
-    public function pushCloseOrderJod(Order $order, int $delay): bool
+    public function pushCloseOrderJod(Order $order, int $delay = 0): bool
     {
         return $this->driver->push(new CloseOrderJob($order), $delay);
     }
