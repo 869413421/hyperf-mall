@@ -10,10 +10,11 @@ namespace App\Services;
 
 
 use App\Exception\UserServiceException;
+use App\Facade\Redis;
 use App\Handler\Email\EmailMessageInterface;
 use App\Handler\Sms\SmsInterface;
 use App\Model\User;
-use App\Utils\RedisUtil;
+
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Str;
@@ -21,12 +22,6 @@ use Phper666\JwtAuth\Jwt;
 
 class UserService
 {
-    /**
-     * @Inject
-     * @var RedisUtil
-     */
-    private $redis;
-
     /**
      * @Inject
      * @var Jwt
@@ -56,7 +51,7 @@ class UserService
 
         if (key_exists('phone', $data))
         {
-            $code = $this->redis->get($data['phone']);
+            $code = Redis::get($data['phone']);
 
             if ($code != $data['code'])
             {
@@ -153,7 +148,7 @@ class UserService
         $user->status = 0;
         $user->email_verify_date = Carbon::now();
         $user->save();
-        $this->redis->del($key);
+        Redis::del($key);
     }
 
     /**

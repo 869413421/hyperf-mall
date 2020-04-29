@@ -10,7 +10,7 @@ use Donjan\Permission\Models\Role;
 
 class RoleController extends BaseController
 {
-    public function show()
+    public function index()
     {
         $data = $this->getPaginateData(Role::query()->with('permissions')->orderBy('created_at', 'DESC')->paginate());
         return $this->response->json(responseSuccess(200, '', $data));

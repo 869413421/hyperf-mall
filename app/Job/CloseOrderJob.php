@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Job;
 
-use App\Model\Order\Order;
-use App\Model\Order\OrderItem;
-use App\Model\Product\ProductSku;
+use App\Model\Order;
+use App\Model\OrderItem;
+use App\Model\ProductSku;
 use Hyperf\AsyncQueue\Job;
 use Hyperf\DbConnection\Db;
 

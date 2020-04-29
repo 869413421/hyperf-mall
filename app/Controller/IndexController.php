@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Constants\ResponseCode;
+use App\Facade\Redis;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 
@@ -24,5 +25,12 @@ class IndexController extends AbstractController
         $user = $this->request->input('user', 'Hyperf');
 
         return $response->json(responseSuccess(ResponseCode::CREATE_ED, ['user' => $user]));
+    }
+
+    public function test()
+    {
+        $key = $this->request->input('key');
+        $value = $this->request->input('value');
+        Redis::set($key, $value);
     }
 }

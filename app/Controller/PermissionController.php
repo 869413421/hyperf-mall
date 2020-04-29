@@ -9,7 +9,7 @@ use App\Request\PermissionRequest;
 
 class PermissionController extends BaseController
 {
-    public function show()
+    public function index()
     {
         $data = $this->getPaginateData(Permission::query()->paginate());
         return $this->response->json(responseSuccess(200, '', $data));

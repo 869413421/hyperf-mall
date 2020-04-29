@@ -5,7 +5,7 @@ declare (strict_types=1);
 namespace App\Model;
 
 
-use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\Database\Model\Events\Deleting;
 use Hyperf\DbConnection\Db;
 
 class Permission extends \Donjan\Permission\Models\Permission
@@ -19,9 +19,8 @@ class Permission extends \Donjan\Permission\Models\Permission
         'parent_id', 'url', 'name', 'display_name', 'guard_name', 'sort'
     ];
 
-    public function deleted(Deleted $event)
+    public function deleting(Deleting $event)
     {
-        parent::deleted($event);
         Db::table('role_has_permissions')->where('permission_id', $this->id)->delete();
     }
 }

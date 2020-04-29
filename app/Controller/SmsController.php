@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Facade\Redis;
 use App\Handler\Sms\SmsInterface;
 use App\Request\SmsRequest;
-use App\Utils\RedisUtil;
 use Hyperf\Di\Annotation\Inject;
 
 class SmsController extends BaseController
@@ -17,19 +17,13 @@ class SmsController extends BaseController
      */
     private $service;
 
-    /**
-     * @Inject()
-     * @var RedisUtil
-     */
-    private $redis;
-
     public function store(SmsRequest $request)
     {
         $phone = $request->input('phone');
         $code = $request->input('code');
         $sessionKey = $request->input('sessionKey');
 
-        $cacheCode = $this->redis->get($sessionKey);
+        $cacheCode = Redis::get($sessionKey);
         if (!$cacheCode || $cacheCode != $code)
         {
             return $this->response->json(responseError(422, '验证码错误'));
@@ -37,8 +31,8 @@ class SmsController extends BaseController
 
         $sendCode = str_pad((string)mt_rand(000000, 999999), 6, '0');
         $this->service->send($phone, ['code' => $sendCode]);
-        $this->redis->del($sessionKey);
-        $this->redis->set($phone, $sendCode, 300);
+        Redis::del($sessionKey);
+        Redis::set($phone, $sendCode, 300);
         return $this->response->json(responseSuccess());
     }
 

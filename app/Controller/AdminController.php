@@ -11,7 +11,7 @@ use App\Request\AdminRequest;
 
 class AdminController extends BaseController
 {
-    public function show()
+    public function index()
     {
         $data = $this->getPaginateData(User::with('roles')->paginate());
         return $this->response->json(responseSuccess(200, '', $data));
