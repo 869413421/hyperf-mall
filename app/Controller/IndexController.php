@@ -31,6 +31,6 @@ class IndexController extends AbstractController
     {
         $key = $this->request->input('key');
         $value = $this->request->input('value');
-        Redis::set($key, $value);
+        Redis::set($key, $value,300);
     }
 }

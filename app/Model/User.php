@@ -8,6 +8,7 @@ use Donjan\Permission\Traits\HasRoles;
 use Hyperf\Database\Model\Events\Deleted;
 use Hyperf\Database\Query\Builder;
 use Hyperf\DbConnection\Db;
+use Hyperf\Utils\Str;
 
 /**
  * @property int $id
@@ -67,10 +68,16 @@ class User extends ModelBase implements ModelInterface
         $this->hasMany(UserAddress::class);
     }
 
+    /**
+     * 重置密码
+     * @return string
+     */
     public function resetPassword()
     {
-        $this->password = md5('123456');
+        $newPassword = Str::random(6);
+        $this->password = md5($newPassword);
         $this->save();
+        return $newPassword;
     }
 
     public function changeDisablesStatus()

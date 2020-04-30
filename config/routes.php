@@ -40,9 +40,9 @@ Router::addGroup('', function ()
     Router::get('/email/identity', 'App\Controller\EmailController@verifyEmail');
 
     //验证码
-    Router::get('/captcha', 'App\Controller\Captcha\CaptchaController@show');
+    Router::get('/captcha', 'App\Controller\CaptchaController@store');
     //发送短信验证码
-    Router::post('/sms', 'App\Controller\Sms\SmsController@store');
+    Router::post('/sms', 'App\Controller\SmsController@store');
 
     //商品列表
     Router::get('/product', 'App\Controller\ProductController@index');

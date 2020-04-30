@@ -22,9 +22,9 @@ class SmsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sessionKey' => 'required',
-            'phone' => 'required',
-            'code' => 'required'
+            'sessionKey' => 'required|string',
+            'phone' => 'required|string',
+            'code' => 'required|string|min:4|max:6'
         ];
     }
 }

@@ -1,24 +1,16 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://doc.hyperf.io
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
- */
-
+//邮件配置
 return [
     'default' => [
         'chartSet' => 'UTF-8',
-        'host' => env('email_host', 'smtp.163.com'),
+        'host' => env('EMAIL_HOST'),
         'smtpAuth' => true,
-        'form' => env('email', '13528685024@163.com'),
-        'userName' => env('userName', '13528685024@163.com'),
-        'passWord' => env('passWord', 'ZDSHOMZNATCYOQOS'),
+        'form' => env('EMAIL'),
+        'userName' => env('EMAIL_USER_NAME'),
+        'passWord' => env('EMAIL_USER_PWD'),
         'smtpSecure' => 'ssl',
-        'port' => 465,
+        'port' => env('EMAIL_PORT'),
     ]
 ];

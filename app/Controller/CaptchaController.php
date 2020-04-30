@@ -21,12 +21,12 @@ class CaptchaController
      */
     private $service;
 
-    public function show(CaptchaRequest $request)
+    public function store(CaptchaRequest $request)
     {
         $key = $request->input('sessionKey');
         $this->service->build();
         $code = $this->service->getPhrase();
-        Redis::set($key, $code, 300);
+        Redis::set($key, $code, 10000);
         return $this->response()->withAddedHeader('content-type', 'image/jpg')
             ->withBody(new SwooleStream($this->service->get()));
     }

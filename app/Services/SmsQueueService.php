@@ -8,11 +8,11 @@
 
 namespace App\Services;
 
-use App\Job\SendEmailJob;
+use App\Job\SendSmsJob;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\Driver\DriverInterface;
 
-class EmailQueueService
+class SmsQueueService
 {
     /**
      * @var DriverInterface
@@ -24,8 +24,8 @@ class EmailQueueService
         $this->driver = $driverFactory->get('default');
     }
 
-    public function pushSendEmailJob(array $params, int $delay = 0): bool
+    public function pushSendSmsJob(array $params, int $delay = 0): bool
     {
-        return $this->driver->push(new SendEmailJob($params), $delay);
+        return $this->driver->push(new SendSmsJob($params), $delay);
     }
 }

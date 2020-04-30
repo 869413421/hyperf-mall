@@ -11,11 +11,10 @@ namespace App\Services;
 
 use App\Exception\UserServiceException;
 use App\Facade\Redis;
-use App\Handler\Email\EmailMessageInterface;
-use App\Handler\Sms\SmsInterface;
 use App\Model\User;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Str;
 use Phper666\JwtAuth\Jwt;
 
 class UserService
@@ -27,16 +26,10 @@ class UserService
     private $jwt;
 
     /**
-     * @Inject
-     * @var EmailMessageInterface
-     */
-    private $emailHandler;
-
-    /**
      * @Inject()
-     * @var SmsInterface
+     * @var SmsQueueService
      */
-    private $smsHandler;
+    private $smsQueueService;
 
     /**
      * @Inject()
@@ -101,10 +94,30 @@ class UserService
             throw new UserServiceException(403, '账号已经激活');
         }
 
-        $this->emailQueueService->pushSendVerifyEmailJob($user, 0);
+        $token = Str::random(16);
+        $subject = '验证邮件';
+        $verifyRoute = env('HTTP_TYPE') . "://" . env('SERVER_HOST') . ":39002/email/identity?token={$token}&userId={$user->id}";
+        $body = "亲爱的" . $user->user_name . "：<br/>感谢您在我站注册了新帐号。<br/>请点击链接激活您的帐号。<br/> 
+    <a href='{$verifyRoute}' target= 
+'_blank'>{$verifyRoute}</a><br/> 
+    如果以上链接无法点击，请将它复制到你的浏览器地址栏中进入访问，该链接24小时内有效。";
+
+        $jobParams = [
+            'subject' => $subject,
+            'body' => $body,
+            'email' => $user->email,
+            'isHtml' => true
+        ];
+        $this->emailQueueService->pushSendEmailJob($jobParams, 0);
+
+        $key = 'userID.' . $user->id;
+        Redis::set($key, $token, 300);
     }
 
-
+    /**
+     * 邮件验证
+     * @param array $data
+     */
     public function verifyEmail(array $data)
     {
         $token = $data['token'];
@@ -188,6 +201,10 @@ class UserService
         return $tokenData;
     }
 
+    /**
+     * 重置密码
+     * @param array $userData
+     */
     public function resetPassword(array $userData)
     {
         if (array_key_exists('phone', $userData))
@@ -202,18 +219,34 @@ class UserService
         }
     }
 
+    /**
+     * 根据邮箱重置密码
+     * @param User $user
+     */
     private function resetPasswordByUserEmail(User $user)
     {
-        $user->resetPassword();
-        $this->emailHandler->address($user->email);
-        $this->emailHandler->subject('重置密码成功');
-        $this->emailHandler->body('重置的密码为123456');
-        $this->emailHandler->send();
+        $newPassword = $user->resetPassword();
+        $jobParams = [
+            'subject' => '重置密码成功',
+            'body' => "重置密码成功，你的新密码是:{$newPassword},请勿泄露。",
+            'email' => $user->email
+        ];
+        $this->emailQueueService->pushSendEmailJob($jobParams, 0);
     }
 
+    /**
+     * 根据电话重置密码
+     * @param User $user
+     */
     private function resetPasswordByUserPhone(User $user)
     {
-        $user->resetPassword();
-        $this->smsHandler->send($user->phone, ['code' => '123456']);
+        $newPassword = $user->resetPassword();
+        $jobParams = [
+            'phone' => $user->phone,
+            'smsParams' => [
+                'code' => $newPassword
+            ],
+        ];
+        $this->emailQueueService->pushSendEmailJob($jobParams, 0);
     }
 }

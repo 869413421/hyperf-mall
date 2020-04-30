@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Request\ResetPasswordRequest;
 use App\Request\UserRequest;
 use App\Services\UserService;
 use Hyperf\Di\Annotation\Inject;
@@ -33,7 +34,7 @@ class UserController extends BaseController
             $message = "注册成功，请前往邮箱{$user->email}激活账号";
         }
 
-        return $this->response->json(responseSuccess(200, $message));
+        return $this->response->json(responseSuccess(201, $message));
     }
 
     /**
@@ -53,7 +54,7 @@ class UserController extends BaseController
     }
 
 
-    public function resetPassword(UserRequest $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
         $this->service->resetPassword($request->validated());
 

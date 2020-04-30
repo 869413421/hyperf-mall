@@ -21,16 +21,6 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->path() == 'user/password')
-        {
-            $rules = [
-                'email' => 'required_without:phone|email|exists:users,email',
-                'phone' => 'required_without:email|exists:users,phone',
-            ];
-
-            return $rules;
-        }
-
         switch ($this->getMethod())
         {
             case 'POST':
