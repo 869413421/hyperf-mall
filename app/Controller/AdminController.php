@@ -32,14 +32,24 @@ class AdminController extends BaseController
         {
             $data['password'] = md5($data['password']);
         }
-        var_dump($data);
-        User::getFirstById($request->input('id'))->fill($data)->save();
+
+        $user = User::getFirstById($request->route('id'));
+        if (!$user)
+        {
+            throw new ServiceException(403, '用户不存在');
+        }
+        $user->fill($data)->save();
         return $this->response->json(responseSuccess(200, '更新成功'));
     }
 
     public function delete(AdminRequest $request)
     {
-        $user = User::getFirstById($request->input('id'));
+        $user = User::getFirstById($request->route('id'));
+        if (!$user)
+        {
+            throw new ServiceException(403, '用户不存在');
+        }
+
         if ($user->id === 1)
         {
             throw new ServiceException(-403, '超级管理员不允许删除');
@@ -49,24 +59,45 @@ class AdminController extends BaseController
         return $this->response->json(responseSuccess(200, '删除成功'));
     }
 
-    public function AssigningRole(AdminRequest $request)
+    public function AssigningRole()
     {
-        $user = User::getFirstById($request->input('id'));
-        $role = Role::findById((int)$request->input('role_id'));
+        $user = User::getFirstById($this->request->route('id'));
+        if (!$user)
+        {
+            throw new ServiceException(403, '用户不存在');
+        }
+        $role = Role::findById((int)$this->request->route('role_id'));
+        if (!$role)
+        {
+            throw new ServiceException(403, '角色不存在');
+        }
         $user->assignRole($role);
 
         return $this->response->json(responseSuccess(200, '分配成功'));
     }
 
-    public function resetPassword(AdminRequest $request)
+    public function resetPassword()
     {
-        User::getFirstById($request->input('id'))->resetPassword();
-        return $this->response->json(responseSuccess(200, '重置密码成功'));
+        $user = User::getFirstById($this->request->route('id'));
+        if (!$user)
+        {
+            throw new ServiceException(403, '用户不存在');
+        }
+
+        $password = $user->resetPassword();
+        return $this->response->json(responseSuccess(200, '重置密码成功', [
+            'password' => $password
+        ]));
     }
 
-    public function disable(AdminRequest $request)
+    public function disable()
     {
-        User::getFirstById($request->input('id'))->changeDisablesStatus();
+        $user = User::getFirstById($this->request->route('id'));
+        if (!$user)
+        {
+            throw new ServiceException(403, '用户不存在');
+        }
+        $user->changeDisablesStatus();
         return $this->response->json(responseSuccess(200, '修改成功'));
     }
 }

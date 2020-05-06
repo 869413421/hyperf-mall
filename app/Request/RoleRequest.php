@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Request;
 
+use App\Model\Permission;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
 
@@ -22,14 +23,6 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->path() == 'center/role/permission')
-        {
-            return [
-                'id' => 'required|exists:roles',
-                'ids' => 'required|array'
-            ];
-        }
-
         switch ($this->getMethod())
         {
             case 'POST':
@@ -41,10 +34,9 @@ class RoleRequest extends FormRequest
                 break;
             case 'PATCH':
                 return [
-                    'id' => 'required|exists:roles',
                     'name' => [
                         'nullable',
-                        Rule::unique('roles')->ignore($this->input('id'))
+                        Rule::unique('roles')->ignore($this->route('id'))
                     ],
                     'description' => 'nullable|string|min:2|max:200',
 
@@ -52,7 +44,7 @@ class RoleRequest extends FormRequest
                 break;
             case 'DELETE':
                 return [
-                    'id' => 'required|exists:roles',
+
                 ];
                 break;
         }

@@ -41,7 +41,7 @@ class User extends ModelBase implements ModelInterface
     protected $table = 'users';
 
     protected $hidden = [
-        'password', 'email', 'phone', 'real_name'
+        'password'
     ];
     /**
      * The attributes that are mass assignable.

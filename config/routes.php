@@ -47,7 +47,7 @@ Router::addGroup('', function ()
     //商品列表
     Router::get('/product', 'App\Controller\ProductController@index');
     //商品详情
-    Router::get('/product/{id}', 'App\Controller\Product\ProductController@show');
+    Router::get('/product/{id}', 'App\Controller\ProductController@show');
 
     //支付宝网页支付前端回调
     Router::get('/ali/pay/web', 'App\Controller\AliPayController@aliPayReturn');
@@ -86,8 +86,8 @@ Router::addGroup('/me', function ()
 
     //购物车列表
     Router::get('/cart', 'App\Controller\CartController@index');
-    //更新购物车
-    Router::post('/cart/{id}', 'App\Controller\CartController@store');
+    //添加到购物车
+    Router::post('/cart', 'App\Controller\CartController@store');
     //删除购物车
     Router::delete('/cart/{id}', 'App\Controller\CartController@delete');
 
@@ -96,7 +96,7 @@ Router::addGroup('/me', function ()
     //创建新订单
     Router::post('/order', 'App\Controller\OrderController@store');
     //支付订单
-    Router::post('/order/{id}/ali/pay/web', 'App\Controller\AliPayController@store');
+    Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
 }, ['middleware' => $authMiddleWare]);
 
 //后台管理
@@ -146,7 +146,7 @@ Router::addGroup('/center', function ()
         //删除角色
         Router::delete('/{id}', 'App\Controller\RoleController@delete');
         //为角色分配权限
-        Router::patch('/{id}/permission/{permission_id}', 'App\Controller\RoleController@assigningPermission');
+        Router::patch('/{id}/permission', 'App\Controller\RoleController@assigningPermission');
     });
 
     //Product

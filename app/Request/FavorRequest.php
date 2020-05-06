@@ -21,20 +21,7 @@ class FavorRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->getMethod())
-        {
-            case 'POST':
-                $rules = [
-                    'id' => 'required|exists:products',
-                ];
-                return $rules;
-                break;
-            case 'DELETE':
-                return [
-                    'id' => 'required|exists:products',
-                ];
-
-        }
+        return [];
     }
 
     public function messages(): array

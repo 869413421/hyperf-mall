@@ -22,21 +22,6 @@ class AdminRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->path() == 'center/admin/role')
-        {
-            return [
-                'id' => 'required|exists:users',
-                'role_id' => 'required|exists:roles,id'
-            ];
-        }
-
-        if ($this->path() == 'center/admin/status' || $this->path() == 'center/admin/password')
-        {
-            return [
-                'id' => 'required|exists:users',
-            ];
-        }
-
         switch ($this->getMethod())
         {
             case 'POST':
@@ -53,20 +38,19 @@ class AdminRequest extends FormRequest
                 break;
             case 'PATCH':
                 $rules = [
-                    'id' => 'required|exists:users',
                     'user_name' => [
                         'nullable',
-                        Rule::unique('users')->ignore($this->input('id')),
+                        Rule::unique('users')->ignore($this->route('id')),
                     ],
                     'email' => [
                         'nullable',
                         'email',
-                        Rule::unique('users')->ignore($this->input('id')),
+                        Rule::unique('users')->ignore($this->route('id')),
                     ],
                     'password' => 'required|alpha_dash|min:6',
                     'phone' => [
                         'nullable',
-                        Rule::unique('users')->ignore($this->input('id')),
+                        Rule::unique('users')->ignore($this->route('id')),
                     ],
                     'real_name' => 'nullable|string|max:50',
                     'sex' => 'nullable|integer|max:2',
@@ -76,7 +60,7 @@ class AdminRequest extends FormRequest
                 break;
             case 'DELETE':
                 return [
-                    'id' => 'required|exists:users',
+
                 ];
 
         }

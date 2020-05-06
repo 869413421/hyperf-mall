@@ -6,6 +6,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
+
 class UserAddressesRequest extends FormRequest
 {
     /**
@@ -37,7 +38,6 @@ class UserAddressesRequest extends FormRequest
 
             case 'PATCH':
                 return [
-                    'id' => 'required|exists:user_addresses',
                     'province' => 'nullable|string|max:50|min:2',
                     'city' => 'nullable|string|max:50|min:2',
                     'district' => 'nullable|string|max:50|min:2',
@@ -49,9 +49,7 @@ class UserAddressesRequest extends FormRequest
                 break;
 
             case 'DELETE':
-                return [
-                    'id' => 'required|exists:user_addresses',
-                ];
+                return [];
                 break;
         }
     }

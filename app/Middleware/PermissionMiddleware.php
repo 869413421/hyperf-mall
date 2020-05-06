@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
-use App\Model\Permission\Permission;
+use App\Model\Permission;
 use App\Model\User;
 use Hyperf\Di\Annotation\Inject;
 use Psr\Http\Message\ResponseInterface;

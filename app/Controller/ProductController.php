@@ -18,7 +18,7 @@ class ProductController extends BaseController
         $order = $request->input('order');
         $field = $request->input('field');
         $builder = Product::query();
-        var_dump($search);
+
         if ($this->request->decodedPath() !== 'center/product')
         {
             $builder->where('on_sale', true);
@@ -89,7 +89,13 @@ class ProductController extends BaseController
 
     public function favor(FavorRequest $request)
     {
-        $productId = $request->input('id');
+        $productId = $request->route('id');
+        $product = Product::getFirstById($productId);
+        if (!$product)
+        {
+            throw new ServiceException(403, '商品不存在');
+        }
+
         /** @var $user User */
         $user = $request->getAttribute('user');
         if ($user->favoriteProducts()->find($productId))
@@ -103,7 +109,13 @@ class ProductController extends BaseController
 
     public function detach(FavorRequest $request)
     {
-        $productId = $request->input('id');
+        $productId = $request->route('id');
+        $product = Product::getFirstById($productId);
+        if (!$product)
+        {
+            throw new ServiceException(403, '商品不存在');
+        }
+
         /** @var $user User */
         $user = $request->getAttribute('user');
         if (!$user->favoriteProducts()->find($productId))

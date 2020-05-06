@@ -36,18 +36,17 @@ class PermissionRequest extends FormRequest
                 break;
             case 'PATCH':
                 return [
-                    'id' => 'required|exists:permissions,id',
                     'parent_id' => 'nullable|exists:permissions',
                     'url' => [
                         'nullable',
-                        Rule::unique('permissions')->ignore($this->input('id'))
+                        Rule::unique('permissions')->ignore($this->route('id'))
                     ],
                     'name' => [
                         'nullable',
                         'string',
                         'min:2',
                         'max:30',
-                        Rule::unique('permissions')->ignore($this->input('id'))
+                        Rule::unique('permissions')->ignore($this->route('id'))
                     ],
                     'display_name' => 'nullable|string|min:2|max:30',
                     'guard_name' => 'nullable|string|min:2|max:30',
@@ -56,7 +55,7 @@ class PermissionRequest extends FormRequest
                 break;
             case 'DELETE':
                 return [
-                    'id' => 'required|exists:permissions',
+
                 ];
                 break;
         }

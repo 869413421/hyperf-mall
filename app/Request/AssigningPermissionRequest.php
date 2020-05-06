@@ -4,19 +4,11 @@ declare(strict_types=1);
 
 namespace App\Request;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
-use Phper666\JwtAuth\Jwt;
 
-class AliPayWebRequest extends FormRequest
+class AssigningPermissionRequest extends FormRequest
 {
-    /**
-     * @Inject()
-     * @var Jwt
-     */
-    private $jwt;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,14 +22,18 @@ class AliPayWebRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->getMethod())
-        {
-            case 'POST':
-                return [
-
-                ];
-                break;
-        }
+        return [
+            'ids' => 'required|array',
+            'ids.*' => [
+                Rule::exists('permissions', 'id')
+            ],
+        ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'ids.*.exists' => '选项不存在'
+        ];
+    }
 }

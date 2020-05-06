@@ -21,7 +21,7 @@ class AliPayController extends BaseController
 
     public function store(AliPayWebRequest $request)
     {
-        $content = $this->service->aliPayWeb($request->input('order_id'));
+        $content = $this->service->aliPayWeb($request->route('order_id'));
         return $this->response()->withAddedHeader('content-type', 'text/html')
             ->withBody(new SwooleStream($content));
     }

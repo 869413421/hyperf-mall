@@ -13,7 +13,7 @@ class PermissionTableSeeder extends Seeder
      */
     public static function createData()
     {
-        \Hyperf\DbConnection\Db::table((new App\Model\Permission\Permission())->getTable())->insert([
+        \Hyperf\DbConnection\Db::table((new App\Model\Permission())->getTable())->insert([
             [
                 'id' => 1,
                 'parent_id' => 0,
@@ -61,7 +61,7 @@ class PermissionTableSeeder extends Seeder
             ], [
                 'id' => 6,
                 'parent_id' => 2,
-                'url' => '/center/admin/patch',
+                'url' => '/center/admin/{id}/patch',
                 'name' => '编辑用户',
                 'display_name' => '编辑用户',
                 'guard_name' => 'web',
@@ -78,7 +78,7 @@ class PermissionTableSeeder extends Seeder
             ], [
                 'id' => 8,
                 'parent_id' => 3,
-                'url' => '/center/role/patch',
+                'url' => '/center/role/{id}/patch',
                 'name' => '编辑角色',
                 'display_name' => '编辑角色',
                 'guard_name' => 'web',
@@ -87,7 +87,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 9,
                 'parent_id' => 3,
-                'url' => '/center/role/delete',
+                'url' => '/center/role/{id}/delete',
                 'name' => '删除角色',
                 'display_name' => '删除角色',
                 'guard_name' => 'web',
@@ -96,7 +96,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 10,
                 'parent_id' => 3,
-                'url' => '/center/role/permission/patch',
+                'url' => '/center/role/{id}/permission/patch',
                 'name' => '为角色分配权限',
                 'display_name' => '为角色分配权限',
                 'guard_name' => 'web',
@@ -114,7 +114,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 12,
                 'parent_id' => 4,
-                'url' => '/center/permission/patch',
+                'url' => '/center/permission/{id}/patch',
                 'name' => '编辑节点',
                 'display_name' => '编辑节点',
                 'guard_name' => 'web',
@@ -123,7 +123,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 13,
                 'parent_id' => 4,
-                'url' => '/center/permission/delete',
+                'url' => '/center/permission/{id}/delete',
                 'name' => '删除节点',
                 'display_name' => '删除节点',
                 'guard_name' => 'web',
@@ -150,7 +150,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 16,
                 'parent_id' => 2,
-                'url' => '/center/admin/status/patch',
+                'url' => '/center/admin/{id}/status/patch',
                 'name' => '修改用户禁用状态',
                 'display_name' => '修改用户禁用状态',
                 'guard_name' => 'web',
@@ -159,7 +159,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 17,
                 'parent_id' => 2,
-                'url' => '/center/admin/password/patch',
+                'url' => '/center/admin/{id}/password/patch',
                 'name' => '重置用户密码',
                 'display_name' => '重置用户密码',
                 'guard_name' => 'web',
@@ -168,7 +168,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 18,
                 'parent_id' => 2,
-                'url' => '/center/admin/role/patch',
+                'url' => '/center/admin/{id}/role/{role_id}/patch',
                 'name' => '为用户分配角色',
                 'display_name' => '为用户分配角色',
                 'guard_name' => 'web',
@@ -238,14 +238,14 @@ class PermissionTableSeeder extends Seeder
                 'sort' => 0
             ]
         ]);
-        $role = \App\Model\Permission\Role::create([
+        $role = \App\Model\Role::create([
             'name' => '超级管理员',
             'guard_name' => 'web',
             'description' => '超级管理员'
         ]);
-        $roleIdArr = \App\Model\Permission\Permission::query()->select('id')->pluck('id')->toArray();
+        $roleIdArr = \App\Model\Permission::query()->select('id')->pluck('id')->toArray();
         $role->permissions()->sync($roleIdArr);
-        $user = \App\Model\User::where('id', 1)->first();
+        $user = \App\Model\User::getFirstById(1);
         $user->assignRole($role);
     }
 }

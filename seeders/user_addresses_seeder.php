@@ -13,7 +13,7 @@ class UserAddressesSeeder extends Seeder
      */
     public static function createData()
     {
-        for ($i = 0; $i < 50; $i++)
+        for ($i = 0; $i < 10; $i++)
         {
             $user = \App\Model\User::query()->inRandomOrder()->first();
 

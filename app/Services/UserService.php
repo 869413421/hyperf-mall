@@ -247,6 +247,6 @@ class UserService
                 'code' => $newPassword
             ],
         ];
-        $this->emailQueueService->pushSendEmailJob($jobParams, 0);
+        $this->smsQueueService->pushSendSmsJob($jobParams, 0);
     }
 }

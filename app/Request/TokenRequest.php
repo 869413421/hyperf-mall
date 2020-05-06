@@ -21,15 +21,6 @@ class TokenRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->path())
-        {
-            case 'user/token':
-                return $this->getUserTokenRules();
-        }
-    }
-
-    private function getUserTokenRules(): array
-    {
         switch ($this->getMethod())
         {
             case 'POST':
@@ -43,4 +34,5 @@ class TokenRequest extends FormRequest
                 break;
         }
     }
+
 }
