@@ -38,16 +38,16 @@ class ProductRequest extends FormRequest
                     'image' => 'required|url',
                     'on_sale' => 'required|integer|boolean',
                     'price' => 'required|numeric',
-                    'sku_arr' => 'required|array',
-                    'sku_arr.*' => [
-
-                    ]
+                    'items' => 'required|array',
+                    'items.*.title' => 'required|string|between:2,50',
+                    'items.*.description' => 'required|string|between:2,1000',
+                    'items.*.price' => 'required|numeric',
+                    'items.*.stock' => 'required|integer|min:0',
                 ];
                 return $rules;
                 break;
             case 'PATCH':
                 $rules = [
-                    'id' => 'required|exists:products',
                     'title' => 'nullable|string|between:2,50',
                     'description' => 'nullable|string|between:2,1000',
                     'image' => 'nullable|url',
@@ -58,7 +58,6 @@ class ProductRequest extends FormRequest
                 break;
             case 'DELETE':
                 return [
-                    'id' => 'required|exists:products',
                 ];
 
         }

@@ -163,14 +163,14 @@ Router::addGroup('/center', function ()
     });
 
     //ProductSku
-    Router::addGroup('product/{product_id}/sku', function ()
+    Router::addGroup('/product/{id}/sku', function ()
     {
         //新建库存
         Router::post('', 'App\Controller\ProductSkuController@store');
         //修改库存
-        Router::patch('/{id}', 'App\Controller\ProductSkuController@update');
+        Router::patch('/{sku_id}', 'App\Controller\ProductSkuController@update');
         //删除库存
-        Router::delete('/{id}', 'App\Controller\ProductSkuController@delete');
+        Router::delete('/{sku_id}', 'App\Controller\ProductSkuController@delete');
     });
 
 }, ['middleware' => $adminMiddleWare]);

@@ -9,9 +9,17 @@ use App\Model\Product;
 use App\Model\User;
 use App\Request\FavorRequest;
 use App\Request\ProductRequest;
+use App\Services\ProductService;
+use Hyperf\Di\Annotation\Inject;
 
 class ProductController extends BaseController
 {
+    /**
+     * @Inject()
+     * @var ProductService
+     */
+    private $productService;
+
     public function index(ProductRequest $request)
     {
         $search = $request->input('search');
@@ -37,10 +45,8 @@ class ProductController extends BaseController
                     });
             });
         }
-        else
-        {
-            $builder->with('skus');
-        }
+        $builder->with('skus');
+
 
         if ($order && $field)
         {
@@ -67,23 +73,29 @@ class ProductController extends BaseController
 
     public function store(ProductRequest $request)
     {
-        $data = $request->validated();
-        Product::query()->create($data);
+        $this->productService->createProduct($request->validated());
         return $this->response->json(responseSuccess(201));
     }
 
     public function update(ProductRequest $request)
     {
-        $data = $request->validated();
-        $product = Product::getFirstById($data['id']);
-        $product->update($data);
+        $product = Product::getFirstById($request->route('id'));
+        if (!$product)
+        {
+            throw new ServiceException(403, '商品不存在');
+        }
+        $product->update($request->validated());
         return $this->response->json(responseSuccess(200, '更新成功'));
     }
 
     public function delete(ProductRequest $request)
     {
-        $id = $request->input('id');
-        Product::getFirstById($id)->delete();
+        $product = Product::getFirstById($request->route('id'));
+        if (!$product)
+        {
+            throw new ServiceException(403, '商品不存在');
+        }
+        $product->delete();
         return $this->response->json(responseSuccess(201, '删除成功'));
     }
 

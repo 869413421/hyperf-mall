@@ -195,7 +195,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 21,
                 'parent_id' => 19,
-                'url' => '/center/product/patch',
+                'url' => '/center/product/{id}/patch',
                 'name' => '更新商品',
                 'display_name' => '更新商品',
                 'guard_name' => 'web',
@@ -204,7 +204,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 22,
                 'parent_id' => 19,
-                'url' => '/center/product/delete',
+                'url' => '/center/product/{id}/delete',
                 'name' => '删除商品',
                 'display_name' => '删除商品',
                 'guard_name' => 'web',
@@ -213,7 +213,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 23,
                 'parent_id' => 19,
-                'url' => '/center/product/sku/post',
+                'url' => '/center/product/{id}/sku/post',
                 'name' => '添加商品库存',
                 'display_name' => '添加商品库存',
                 'guard_name' => 'web',
@@ -222,7 +222,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 24,
                 'parent_id' => 19,
-                'url' => '/center/product/sku/patch',
+                'url' => '/center/product/{id}/sku/{sku_id}/patch',
                 'name' => '更新商品',
                 'display_name' => '更新商品',
                 'guard_name' => 'web',
@@ -231,7 +231,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 25,
                 'parent_id' => 19,
-                'url' => '/center/product/sku/delete',
+                'url' => '/center/product/{id}/sku/{sku_id}/delete',
                 'name' => '删除商品',
                 'display_name' => '删除商品',
                 'guard_name' => 'web',

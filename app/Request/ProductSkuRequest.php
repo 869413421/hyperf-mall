@@ -25,7 +25,6 @@ class ProductSkuRequest extends FormRequest
         {
             case 'POST':
                 $rules = [
-                    'product_id' => 'required|exists:products,id',
                     'title' => 'required|string|between:2,50',
                     'description' => 'required|string|between:2,1000',
                     'price' => 'required|numeric',
@@ -35,7 +34,6 @@ class ProductSkuRequest extends FormRequest
                 break;
             case 'PATCH':
                 $rules = [
-                    'id' => 'required|exists:product_skus',
                     'title' => 'nullable|string|between:2,50',
                     'description' => 'nullable|string|between:2,1000',
                     'price' => 'nullable|numeric',
@@ -45,7 +43,7 @@ class ProductSkuRequest extends FormRequest
                 break;
             case 'DELETE':
                 return [
-                    'id' => 'required|exists:product_skus',
+
                 ];
 
         }
