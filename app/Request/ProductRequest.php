@@ -38,6 +38,10 @@ class ProductRequest extends FormRequest
                     'image' => 'required|url',
                     'on_sale' => 'required|integer|boolean',
                     'price' => 'required|numeric',
+                    'sku_arr' => 'required|array',
+                    'sku_arr.*' => [
+
+                    ]
                 ];
                 return $rules;
                 break;
