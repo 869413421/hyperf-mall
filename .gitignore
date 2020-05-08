@@ -12,3 +12,4 @@ vendor/
 *.lock
 .phpunit*
 storage
+resource

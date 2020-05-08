@@ -8,22 +8,22 @@ return [
         'driver' => \App\Handler\Pay\AliPay::class,
         'private_key' => env('ALI_PRIVATE_KEY'),
         'log' => [
-            'file' => '/hyperf-skeleton/runtime/logs/alipay.log',
+            'file' => BASE_PATH . '/runtime/logs/alipay.log',
         ],
         'mode' => 'dev',
-        'notify_url' => 'http://'.env('SERVER_HOST').':39002/ali/pay/web/service',
-        'return_url' => 'http://'.env('SERVER_HOST').':39002/ali/pay/web',
+        'notify_url' => 'http://' . env('SERVER_HOST') . ':39002/ali/pay/web/service',
+        'return_url' => 'http://' . env('SERVER_HOST') . ':39002/ali/pay/web',
     ],
 
     'wechat' => [
-        'app_id' => '',
-        'mch_id' => '',
+        'app_id' => env('WE_CHAT_PAY_APP_ID'),
+        'mch_id' => env('WE_CHAT_PAY_MCH_ID'),
         'driver' => \App\Handler\Pay\WeChatPay::class,
-        'key' => '',
-        'cert_client' => '',
-        'cert_key' => '',
+        'key' => env('WE_CHAT_PAY_API_KEY'),
+        'cert_client' => BASE_PATH . '/resources/wechat_pay/apiclient_cert.pem',
+        'cert_key' => BASE_PATH . '/resources/wechat_pay/apiclient_key.pem',
         'log' => [
-            'file' => '/hyperf-skeleton/runtime/logs/wechat_pay.log',
+            'file' => BASE_PATH . '/runtime/logs/wechat_pay.log',
         ],
     ],
 ];
