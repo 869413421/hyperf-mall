@@ -22,7 +22,7 @@ class WeChatPay implements PayInterface
 
     public function webPay(string $no, float $total_amount, string $subject)
     {
-        return $this->pay->web([
+        return $this->pay->scan([
             'out_trade_no' => $no,
             'total_amount' => $total_amount,
             'subject' => $subject
@@ -31,11 +31,12 @@ class WeChatPay implements PayInterface
 
     public function verify($data = null)
     {
-        // TODO: Implement verify() method.
+        return $this->pay->verify($data);
     }
 
     public function success()
     {
-        // TODO: Implement success() method.
+        return $this->pay->success();
     }
+
 }

@@ -54,6 +54,9 @@ Router::addGroup('', function ()
     //支付宝网页支付服务器回调
     Router::post('/ali/pay/web/service', 'App\Controller\AliPayController@aliPayNotify');
 
+    //微信支付服务器回调
+    Router::post('/wechat/pay/web/service', 'App\Controller\WeChatPayController@aliPayNotify');
+
 });
 
 //登陆用户访问路由
@@ -95,8 +98,10 @@ Router::addGroup('/me', function ()
     Router::get('/order', 'App\Controller\OrderController@index');
     //创建新订单
     Router::post('/order', 'App\Controller\OrderController@store');
-    //支付订单
+    //支付支付宝订单
     Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
+    //支付微信订单
+    Router::post('/order/{order_id}/wechat/pay/web', 'App\Controller\WeChatPayController@store');
 }, ['middleware' => $authMiddleWare]);
 
 //后台管理

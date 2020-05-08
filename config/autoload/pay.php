@@ -20,6 +20,7 @@ return [
         'mch_id' => env('WE_CHAT_PAY_MCH_ID'),
         'driver' => \App\Handler\Pay\WeChatPay::class,
         'key' => env('WE_CHAT_PAY_API_KEY'),
+        'notify_url' => 'http://' . env('SERVER_HOST') . ':39002/wechat/pay/web/service',
         'cert_client' => BASE_PATH . '/resources/wechat_pay/apiclient_cert.pem',
         'cert_key' => BASE_PATH . '/resources/wechat_pay/apiclient_key.pem',
         'log' => [
