@@ -8,7 +8,8 @@ use Hyperf\Utils\ApplicationContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoole\Websocket\Frame;
 use Swoole\WebSocket\Server as WebSocketServer;
-use Firstphp\Wsdebug\Wsdebug;
+use Phper666\JwtAuth\Jwt;
+use App\Model\User;
 
 if (!function_exists('dd'))
 {
@@ -139,5 +140,18 @@ if (!function_exists('getUUID'))
     function getUUID($prefix = '')
     {
         return $prefix . '_' . uniqid(date('YmdHis'));
+    }
+}
+
+if (!function_exists('authUser'))
+{
+    /**
+     * @return User
+     */
+    function authUser()
+    {
+        $jwt = container()->get(Jwt::class);
+        $token = $jwt->getTokenObj();
+        return User::getFirstById($token->getClaim('id'));
     }
 }

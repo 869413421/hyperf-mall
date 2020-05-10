@@ -28,7 +28,7 @@ class OrderItem extends ModelBase implements ModelInterface
      *
      * @var array
      */
-    protected $fillable = ['amount', 'price', 'rating', 'product_id', 'product_sku_id'];
+    protected $fillable = ['amount', 'price', 'rating', 'product_id', 'product_sku_id', 'review', 'reviewed_at'];
     /**
      * The attributes that should be cast to native types.
      *

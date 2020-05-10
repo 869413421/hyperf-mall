@@ -8,16 +8,24 @@
 
 namespace App\Services;
 
+use App\Event\PaySuccessEvent;
 use App\Exception\ServiceException;
 use App\Handler\Pay\PayFactory;
 use App\Model\Order;
 use Carbon\Carbon;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Hyperf\Di\Annotation\Inject;
 use Phper666\JwtAuth\Jwt;
 
 class WeChatPayService
 {
     private $pay;
+
+    /**
+     * @Inject()
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @Inject()
@@ -76,5 +84,7 @@ class WeChatPayService
         ]);
 
         $this->pay->success();
+        //触发订单支付成功事件
+        $this->eventDispatcher->dispatch(new PaySuccessEvent($order));
     }
 }

@@ -8,16 +8,24 @@
 
 namespace App\Services;
 
+use App\Event\PaySuccessEvent;
 use App\Exception\ServiceException;
 use App\Handler\Pay\PayFactory;
 use App\Model\Order;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 use Phper666\JwtAuth\Jwt;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class AliPayService
 {
     private $pay;
+
+    /**
+     * @Inject()
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @Inject()
@@ -84,5 +92,6 @@ class AliPayService
         ]);
 
         $this->pay->success();
+        $this->eventDispatcher->dispatch(new PaySuccessEvent($order));
     }
 }

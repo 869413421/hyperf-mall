@@ -236,6 +236,42 @@ class PermissionTableSeeder extends Seeder
                 'display_name' => '删除商品',
                 'guard_name' => 'web',
                 'sort' => 0
+            ],
+            [
+                'id' => 26,
+                'parent_id' => 1,
+                'url' => '/center/order/get',
+                'name' => '订单管理',
+                'display_name' => '订单管理',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 27,
+                'parent_id' => 26,
+                'url' => '/center/order/{id}/get',
+                'name' => '订单详情',
+                'display_name' => '订单详情',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 28,
+                'parent_id' => 26,
+                'url' => '/center/order/{id}/logistic/patch',
+                'name' => '订单发货',
+                'display_name' => '订单发货',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 29,
+                'parent_id' => 26,
+                'url' => '/center/order/{id}/refund/patch',
+                'name' => '退款处理',
+                'display_name' => '退款处理',
+                'guard_name' => 'web',
+                'sort' => 0
             ]
         ]);
         $role = \App\Model\Role::create([

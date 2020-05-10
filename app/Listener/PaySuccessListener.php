@@ -7,6 +7,7 @@ namespace App\Listener;
 use App\Event\PaySuccessEvent;
 use App\Model\Order;
 use App\Model\OrderItem;
+use App\Model\Product;
 use Hyperf\Event\Annotation\Listener;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -33,15 +34,32 @@ class PaySuccessListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param object $event
+     */
     public function process(object $event)
     {
         /** @var $order Order */
         $order = $event->order;
-
-        foreach ($order->items() as $orderItem)
+        foreach ($order->items as $orderItem)
         {
             /** @var $orderItem OrderItem */
-            $product = $orderItem->product();
+
+            /** @var $product Product */
+            $product = $orderItem->product;
+
+            //计算商品销量
+            $soleCount = OrderItem::query()
+                ->where('product_id', $product->id)
+                ->whereHas('order', function ($query)
+                {
+                    $query->whereNotNull('paid_at');
+                })
+                ->sum('amount');
+
+            //保存商品销量
+            $product->sold_count = $soleCount;
+            $product->save();
         }
     }
 }

@@ -102,6 +102,12 @@ Router::addGroup('/me', function ()
     Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
     //支付微信订单
     Router::post('/order/{order_id}/wechat/pay/web', 'App\Controller\WeChatPayController@store');
+    //确认收货
+    Router::patch('/order/{order_id}/logistic', 'App\Controller\OrderController@receivedGood');
+    //评论商品
+    Router::post('/order/{order_id}/review', 'App\Controller\OrderController@review');
+    //申请退款
+    Router::post('/order/{order_id}/refund', 'App\Controller\OrderController@applyRefund');
 }, ['middleware' => $authMiddleWare]);
 
 //后台管理
@@ -176,6 +182,19 @@ Router::addGroup('/center', function ()
         Router::patch('/{sku_id}', 'App\Controller\ProductSkuController@update');
         //删除库存
         Router::delete('/{sku_id}', 'App\Controller\ProductSkuController@delete');
+    });
+
+    //Order
+    Router::addGroup('/order', function ()
+    {
+        //订单列表
+        Router::get('', 'App\Controller\OrderController@orderList');
+        //订单详情
+        Router::get('/{id}', 'App\Controller\OrderController@orderInfo');
+        //订单发货
+        Router::patch('/{id}/logistic', 'App\Controller\OrderController@sendOutGood');
+        //退款处理
+        Router::patch('/{id}/refund', 'App\Controller\OrderController@handleRefund');
     });
 
 }, ['middleware' => $adminMiddleWare]);

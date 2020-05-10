@@ -6,6 +6,7 @@ namespace App\Middleware;
 
 use App\Constants\ResponseCode;
 use App\Model\User;
+use Carbon\Carbon;
 use Hyperf\Utils\Context;
 use Phper666\JwtAuth\Exception\TokenValidException;
 use Phper666\JwtAuth\Jwt;
@@ -57,6 +58,8 @@ class JwtAuthMiddleWare implements MiddlewareInterface
             {
                 throw new TokenValidException('JWT验证失败', ResponseCode::UNAUTHORIZED);
             }
+            $user->last_login_at = Carbon::now();
+            $user->save();
 
             //将user放置到request中
 

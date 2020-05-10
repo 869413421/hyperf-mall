@@ -20,10 +20,15 @@ class BaseController extends AbstractController
     {
         return [
             'list' => $paginateData->items(),
-            'currentPage'=>$paginateData->currentPage(),
-            'lastPage'=>$paginateData->lastPage(),
-            'total'=>$paginateData->total(),
-            'pageSize'=>$paginateData->perPage()
+            'currentPage' => $paginateData->currentPage(),
+            'lastPage' => $paginateData->lastPage(),
+            'total' => $paginateData->total(),
+            'pageSize' => $paginateData->perPage()
         ];
+    }
+
+    public function getPageSize()
+    {
+        return $this->request->input('pageSize') == null ? null : (int)$this->request->input('pageSize');
     }
 }
