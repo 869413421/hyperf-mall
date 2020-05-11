@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Event\PaySuccessEvent;
+use App\Event\RefundSuccessEvent;
 use App\Exception\ServiceException;
 use App\Handler\Pay\PayFactory;
 use App\Model\Order;
@@ -47,7 +48,7 @@ class AliPayService
     {
         $order = Order::getFirstById($orderId);
 
-        if (!$order || $order->user_id != $this->jwt->getTokenObj()->getClaim('id'))
+        if (!$order || $order->user_id != authUser()->id)
         {
             throw new ServiceException(403, '订单不存在');
         }
@@ -69,6 +70,10 @@ class AliPayService
         return $this->pay->verify($data);
     }
 
+    /**
+     * 支付成功服务器回调
+     * @param $data
+     */
     public function aliPayNotify($data)
     {
         $no = $data['out_trade_no'];
@@ -93,5 +98,38 @@ class AliPayService
 
         $this->pay->success();
         $this->eventDispatcher->dispatch(new PaySuccessEvent($order));
+    }
+
+    /**
+     * 支付宝退款
+     * @param Order $order *订单
+     */
+    public function refund(Order $order)
+    {
+        $refundNo = getUUID('refund');
+        $result = $this->pay->refund($order->no, $order->total_amount, $refundNo);
+
+        if ($result->sub_code)
+        {
+            // 将退款失败的保存存入 extra 字段
+            $extra = $order->extra;
+            $extra['refund_failed_code'] = $result->sub_code;
+            // 将订单的退款状态标记为退款失败
+            $order->update([
+                'refund_no' => $refundNo,
+                'refund_status' => Order::REFUND_STATUS_FAILED,
+                'extra' => $extra,
+            ]);
+        }
+        else
+        {
+            // 将订单的退款状态标记为退款成功并保存退款订单号
+            $order->update([
+                'refund_no' => $refundNo,
+                'refund_status' => Order::REFUND_STATUS_SUCCESS,
+            ]);
+            //触发退款成功事件
+            $this->eventDispatcher->dispatch(new RefundSuccessEvent($order));
+        }
     }
 }

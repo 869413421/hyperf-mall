@@ -29,6 +29,12 @@ class OrderService
 
     /**
      * @Inject()
+     * @var AliPayService
+     */
+    private $aliPayService;
+
+    /**
+     * @Inject()
      * @var EmailQueueService
      */
     private $emailQueueService;
@@ -113,15 +119,19 @@ class OrderService
             ],
         ]);
 
+
         /** @var  $user User */
         $user = $order->user;
-        $jobParams = [
-            'subject' => "您好，您的订单已经发货",
-            'body' => "{$user->user_name}您好，您的订单已经发货，物流公司为:{$company}，订单号:{$express_no}",
-            'email' => $user->email,
-            'isHtml' => true
-        ];
-        $this->emailQueueService->pushSendEmailJob($jobParams, 0);
+        if ($user->email)
+        {
+            $jobParams = [
+                'subject' => "您好，您的订单已经发货",
+                'body' => "{$user->user_name}您好，您的订单已经发货，物流公司为:{$company}，订单号:{$express_no}",
+                'email' => $user->email,
+                'isHtml' => true
+            ];
+            $this->emailQueueService->pushSendEmailJob($jobParams, 0);
+        }
     }
 
     /**
@@ -183,6 +193,11 @@ class OrderService
         });
     }
 
+    /**
+     * 申请退款
+     * @param Order $order *订单
+     * @param $reason *理由
+     */
     public function applyRefund(Order $order, $reason)
     {
         if (!$order->paid_at)
@@ -197,10 +212,11 @@ class OrderService
         {
             throw new ServiceException(403, '没有权限操作此订单');
         }
-        if ($order->refund_status !== Order::REFUND_STATUS_PENDING)
+        if (!$order->refund_status !== Order::REFUND_STATUS_PENDING)
         {
-            throw new ServiceException('该订单已经申请过退款，请勿重复申请');
+            throw new ServiceException(403, '订单已经申请过退款');
         }
+
 
         $extra = $order->extra ?: [];
         $extra['refund_reason'] = $reason;
@@ -210,7 +226,59 @@ class OrderService
         ]);
     }
 
+    /**
+     * 拒绝申请退款
+     * @param Order $order *订单
+     * @param $reason *拒绝退款理由
+     */
     public function refuseRefund(Order $order, $reason)
+    {
+        $this->checkOrderRefundStatus($order);
+
+        $extra = $order->extra ?: [];
+        $extra['refund_disagree_reason'] = $reason;
+        $order->update([
+            'refund_status' => Order::REFUND_STATUS_PENDING,
+            'extra' => $extra
+        ]);
+
+        //发送通知
+        /** @var  $user User */
+        $user = $order->user;
+        if ($user->email)
+        {
+            $jobParams = [
+                'subject' => "申请退款被拒绝",
+                'body' => "{$user->user_name}您好，您的订单{$order->no}因为{$reason}，被拒绝退款",
+                'email' => $user->email,
+                'isHtml' => true
+            ];
+            $this->emailQueueService->pushSendEmailJob($jobParams, 0);
+        }
+    }
+
+    public function refund(Order $order)
+    {
+        $this->checkOrderRefundStatus($order);
+        if ($order->user_id !== authUser()->id)
+        {
+            throw new ServiceException(403, '没有权限操作此订单');
+        }
+
+        switch ($order->payment_method)
+        {
+            case 'alipay':
+                $this->aliPayService->refund($order);
+                break;
+            case 'wechat':
+
+                break;
+            default:
+                throw new ServiceException(403, '未知支付方式');
+        }
+    }
+
+    public function checkOrderRefundStatus(Order $order)
     {
         if (!$order->paid_at)
         {
@@ -224,12 +292,5 @@ class OrderService
         {
             throw new ServiceException(403, '订单没有申请退款');
         }
-
-        $extra = $order->extra ?: [];
-        $extra['refund_disagree_reason'] = $reason;
-        $order->update([
-            'refund_status' => Order::REFUND_STATUS_PENDING,
-            'extra' => $extra
-        ]);
     }
 }

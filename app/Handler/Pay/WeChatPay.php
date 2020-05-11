@@ -39,4 +39,9 @@ class WeChatPay implements PayInterface
         return $this->pay->success();
     }
 
+    public function refund(string $no, float $total_amount, string $refundNo)
+    {
+
+    }
+
 }

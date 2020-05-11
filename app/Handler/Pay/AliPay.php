@@ -38,4 +38,13 @@ class AliPay implements PayInterface
     {
         return $this->pay->success();
     }
+
+    public function refund(string $no, float $total_amount, string $refundNo)
+    {
+        return $this->pay->refund([
+            'out_trade_no' => $no, // 之前的订单流水号
+            'refund_amount' => $total_amount, // 退款金额，单位元
+            'out_request_no' => $refundNo, // 退款订单号
+        ]);
+    }
 }
