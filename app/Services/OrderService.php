@@ -17,7 +17,6 @@ use App\Model\UserAddress;
 use Carbon\Carbon;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use Phper666\JwtAuth\Jwt;
 
 class OrderService
 {
@@ -32,6 +31,12 @@ class OrderService
      * @var AliPayService
      */
     private $aliPayService;
+
+    /**
+     * @Inject()
+     * @var WeChatPayService
+     */
+    private $wecChatPayService;
 
     /**
      * @Inject()
@@ -212,7 +217,7 @@ class OrderService
         {
             throw new ServiceException(403, '没有权限操作此订单');
         }
-        if (!$order->refund_status !== Order::REFUND_STATUS_PENDING)
+        if ($order->refund_status !== Order::REFUND_STATUS_PENDING)
         {
             throw new ServiceException(403, '订单已经申请过退款');
         }
@@ -271,7 +276,7 @@ class OrderService
                 $this->aliPayService->refund($order);
                 break;
             case 'wechat':
-
+                $this->wecChatPayService->refund($order);
                 break;
             default:
                 throw new ServiceException(403, '未知支付方式');

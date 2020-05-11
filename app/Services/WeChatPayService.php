@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Event\PaySuccessEvent;
+use App\Event\RefundSuccessEvent;
 use App\Exception\ServiceException;
 use App\Handler\Pay\PayFactory;
 use App\Model\Order;
@@ -86,5 +87,54 @@ class WeChatPayService
         $this->pay->success();
         //触发订单支付成功事件
         $this->eventDispatcher->dispatch(new PaySuccessEvent($order));
+    }
+
+    /**
+     * 微信退款
+     * @param Order $order *订单
+     */
+    public function refund(Order $order)
+    {
+        $refundNo = getUUID('refund');
+        $this->pay->refund($order->no, $order->total_amount, $refundNo);
+
+        // 将订单的退款状态标记为退款失败
+        $order->update([
+            'refund_no' => $refundNo,
+            'refund_status' => Order::REFUND_STATUS_PROCESSING,
+        ]);
+    }
+
+    public function refundNotify(array $responseData)
+    {
+        // 给微信的失败响应
+        $failXml = '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[FAIL]]></return_msg></xml>';
+        $data = $this->pay->verify($responseData, true);
+
+        // 没有找到对应的订单，原则上不可能发生，保证代码健壮性
+        if (!$order = Order::getFirstByWhere(['no', $data['out_trade_no']]))
+        {
+            return $failXml;
+        }
+
+        if ($data['refund_status'] === 'SUCCESS')
+        {
+            // 退款成功，将订单退款状态改成退款成功
+            $order->update([
+                'refund_status' => Order::REFUND_STATUS_SUCCESS,
+            ]);
+        }
+        else
+        {
+            // 退款失败，将具体状态存入 extra 字段，并表退款状态改成失败
+            $extra = $order->extra;
+            $extra['refund_failed_code'] = $data['refund_status'];
+            $order->update([
+                'refund_status' => Order::REFUND_STATUS_FAILED,
+            ]);
+        }
+
+        $this->eventDispatcher->dispatch(new RefundSuccessEvent($order));
+        return $this->pay->success();
     }
 }

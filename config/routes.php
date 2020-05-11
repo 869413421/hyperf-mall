@@ -56,6 +56,8 @@ Router::addGroup('', function ()
 
     //微信支付服务器回调
     Router::post('/wechat/pay/web/service', 'App\Controller\WeChatPayController@aliPayNotify');
+    //微信退款服务器回调
+    Router::post('/wechat/pay/refund/service', 'App\Controller\WeChatPayController@aliPayNotify');
 
 });
 
