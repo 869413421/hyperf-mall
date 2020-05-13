@@ -11,20 +11,6 @@ use Swoole\WebSocket\Server as WebSocketServer;
 use Phper666\JwtAuth\Jwt;
 use App\Model\User;
 
-if (!function_exists('dd'))
-{
-    function dd(...$args)
-    {
-        foreach ($args as $arg)
-        {
-            $data[] = $arg;
-        }
-
-        $debug = new Wsdebug();
-        $debug->send($data);
-    }
-}
-
 /**
  * 容器实例
  */
