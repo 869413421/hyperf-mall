@@ -100,6 +100,11 @@ class Order extends ModelBase implements ModelInterface
         return $this->hasMany(OrderItem::class);
     }
 
+    public function couponCode()
+    {
+        return $this->belongsTo(CouponCode::class);
+    }
+
     public function creating(Creating $event)
     {
         if (!$this->no)

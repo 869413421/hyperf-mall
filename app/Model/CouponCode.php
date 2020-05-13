@@ -4,6 +4,9 @@ declare (strict_types=1);
 
 namespace App\Model;
 
+use Hyperf\Database\Model\Events\Creating;
+use Hyperf\Utils\Str;
+
 /**
  * @property int $id
  * @property string $name
@@ -13,14 +16,23 @@ namespace App\Model;
  * @property int $total
  * @property int $used
  * @property float $min_amount
- * @property string $not_before
- * @property string $not_after
+ * @property \Carbon\Carbon $not_before
+ * @property \Carbon\Carbon $not_after
  * @property int $enabled
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
 class CouponCode extends ModelBase implements ModelInterface
 {
+    // 用常量的方式定义支持的优惠券类型
+    const TYPE_FIXED = 'fixed';
+    const TYPE_PERCENT = 'percent';
+
+    public static $typeMap = [
+        self::TYPE_FIXED => '固定金额',
+        self::TYPE_PERCENT => '比例',
+    ];
+
     /**
      * The table associated with the model.
      *
@@ -38,12 +50,29 @@ class CouponCode extends ModelBase implements ModelInterface
         'type',
         'total',
         'used',
-        'min_amount'
+        'min_amount',
+        'enabled',
+        'not_before',
+        'not_after'
     ];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'value' => 'float', 'total' => 'integer', 'used' => 'integer', 'min_amount' => 'float', 'enabled' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'value' => 'float', 'total' => 'integer', 'used' => 'integer', 'min_amount' => 'float', 'enabled' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime',];
+
+    /**
+     * 生成优惠券码
+     * @param Creating $event
+     */
+    public function creating(Creating $event)
+    {
+        do
+        {
+            $code = strtoupper(Str::random(16));
+        }
+        while (self::query()->where('code', $code)->exists());
+        $this->code = $code;
+    }
 }

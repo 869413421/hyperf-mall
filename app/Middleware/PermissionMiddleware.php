@@ -28,8 +28,7 @@ class PermissionMiddleware implements MiddlewareInterface
         //去掉路由参数
         $dispatcher = $request->getAttribute('Hyperf\HttpServer\Router\Dispatched');
         $route = $dispatcher->handler->route;
-        $path = $route . '/' . $request->getMethod();
-        $path = strtolower($path);
+        $path = $route . '/' . strtolower($request->getMethod());
 
         $permission = Permission::getPermissions(['url' => $path])->first();
         /**@var $user User * */

@@ -58,6 +58,8 @@ Router::addGroup('', function ()
     Router::post('/wechat/pay/web/service', 'App\Controller\WeChatPayController@aliPayNotify');
     //微信退款服务器回调
     Router::post('/wechat/pay/refund/service', 'App\Controller\WeChatPayController@aliPayNotify');
+    //检查优惠券
+    Router::get('/couponCode', 'App\Controller\CouponCodeController@couponCodeStatus');
 
 });
 
@@ -110,6 +112,7 @@ Router::addGroup('/me', function ()
     Router::post('/order/{order_id}/review', 'App\Controller\OrderController@review');
     //申请退款
     Router::post('/order/{order_id}/refund', 'App\Controller\OrderController@applyRefund');
+
 }, ['middleware' => $authMiddleWare]);
 
 //后台管理
@@ -197,6 +200,21 @@ Router::addGroup('/center', function ()
         Router::patch('/{id}/logistic', 'App\Controller\OrderController@sendOutGood');
         //退款处理
         Router::patch('/{id}/refund', 'App\Controller\OrderController@handleRefund');
+    });
+
+    //CouponCode
+    Router::addGroup('/couponCode', function ()
+    {
+        //优惠券列表
+        Router::get('', 'App\Controller\CouponCodeController@index');
+        //优惠券详情
+        Router::get('/{id}', 'App\Controller\CouponCodeController@show');
+        //创建优惠券
+        Router::post('', 'App\Controller\CouponCodeController@store');
+        //更新优惠券
+        Router::patch('/{id}', 'App\Controller\CouponCodeController@update');
+        //删除优惠券
+        Router::delete('/{id}', 'App\Controller\CouponCodeController@delete');
     });
 
 }, ['middleware' => $adminMiddleWare]);

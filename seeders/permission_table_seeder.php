@@ -272,6 +272,51 @@ class PermissionTableSeeder extends Seeder
                 'display_name' => '退款处理',
                 'guard_name' => 'web',
                 'sort' => 0
+            ],
+            [
+                'id' => 30,
+                'parent_id' => 30,
+                'url' => '/center/couponCode/get',
+                'name' => '优惠券列表',
+                'display_name' => '优惠券列表',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 31,
+                'parent_id' => 30,
+                'url' => '/center/couponCode/{id}/get',
+                'name' => '优惠券详情',
+                'display_name' => '优惠券详情',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 32,
+                'parent_id' => 30,
+                'url' => '/center/couponCode/post',
+                'name' => '创建优惠券',
+                'display_name' => '创建优惠券',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 33,
+                'parent_id' => 30,
+                'url' => '/center/couponCode/{id}/patch',
+                'name' => '更新优惠券',
+                'display_name' => '更新优惠券',
+                'guard_name' => 'web',
+                'sort' => 0
+            ],
+            [
+                'id' => 34,
+                'parent_id' => 30,
+                'url' => '/center/couponCode/{id}/delete',
+                'name' => '删除优惠券',
+                'display_name' => '删除优惠券',
+                'guard_name' => 'web',
+                'sort' => 0
             ]
         ]);
         $role = \App\Model\Role::create([

@@ -12,7 +12,7 @@ class PermissionController extends BaseController
 {
     public function index()
     {
-        $data = $this->getPaginateData(Permission::query()->paginate());
+        $data = $this->getPaginateData(Permission::query()->paginate($this->getPageSize()));
         return $this->response->json(responseSuccess(200, '', $data));
     }
 
