@@ -54,9 +54,10 @@ class OrderService
     {
         $order = Db::transaction(function () use ($user, $orderData)
         {
+            //更新收货地址最后使用日期
             $address = UserAddress::getFirstById($orderData['address_id']);
             $address->update(['last_used_at' => Carbon::now()]);
-
+            //填充订单
             $order = new Order([
                 'address' => [
                     'address' => $address->full_address,
@@ -72,6 +73,7 @@ class OrderService
 
             $totalAmount = 0;
             $skuIds = [];
+            //插入子订单
             foreach ($orderData['items'] as $data)
             {
                 $skuIds[] = $data['sku_id'];
@@ -94,11 +96,16 @@ class OrderService
                     throw new ServiceException(403, "{$productSku->title},库存不足");
                 };
             }
-
+            //使用了优惠券，检查优惠券
             if (array_key_exists('code', $orderData))
             {
                 $couponCode = $this->couponService->checkCouponCode($orderData['code']);
                 $totalAmount = $couponCode->getAdjustedPrice($totalAmount);
+                //检查订单是否满足优惠券最低金额
+                if ($totalAmount < $couponCode->min_amount)
+                {
+                    throw new ServiceException(403, "满{$couponCode->min_amount}元才可使用");
+                }
                 $order->couponCode()->associate($couponCode);
                 if ($couponCode->changeUsed() <= 0)
                 {
@@ -107,6 +114,7 @@ class OrderService
             }
             $order->update(['total_amount' => $totalAmount]);
             $this->orderQueueService->pushCloseOrderJod($order, 500);
+            //清空购物车
             $user->cartItems()->whereIn('product_sku_id', $skuIds)->delete();
 
             return $order;

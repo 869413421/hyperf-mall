@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Exception\ServiceException;
 use App\Model\CouponCode;
+use App\Model\Order;
 use Carbon\Carbon;
 
 class CouponCodeService
@@ -42,6 +43,26 @@ class CouponCodeService
         if ($couponCode->not_after && Carbon::createFromTimeString($couponCode->not_after) < Carbon::now())
         {
             throw new ServiceException(403, '优惠券已经过期');
+        }
+
+        $used = Order::query()->where('user_id', authUser()->id)
+            ->where('coupon_code_id', $couponCode->id)
+            ->where(function ($query)
+            {
+                $query->where(function ($query)
+                {
+                    $query->whereNull('paid_at')
+                        ->where('closed', false);
+                })->orWhere(function ($query)
+                {
+                    $query->whereNotNull('paid_at')
+                        ->where('refund_status', Order::REFUND_STATUS_PENDING);
+                });
+            })->exists();
+
+        if ($used)
+        {
+            throw new ServiceException(403, '已经使用过该优惠券');
         }
         return $couponCode;
     }
