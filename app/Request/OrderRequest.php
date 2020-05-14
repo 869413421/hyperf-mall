@@ -74,7 +74,11 @@ class OrderRequest extends FormRequest
                             }
                         }
                     ],
-                    'items.*.amount' => 'required|integer|min:1'
+                    'items.*.amount' => 'required|integer|min:1',
+                    'code' => [
+                        'nullable',
+                        Rule::exists('coupon_codes')
+                    ]
                 ];
                 break;
         }

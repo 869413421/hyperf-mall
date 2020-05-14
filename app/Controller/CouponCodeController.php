@@ -16,14 +16,19 @@ namespace App\Controller;
 use App\Exception\ServiceException;
 use App\Model\CouponCode;
 use App\Request\CouponCodeRequest;
-use Carbon\Carbon;
+use App\Services\CouponCodeService;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Validation\Rule;
 use Hyperf\Validation\ValidationException;
 use Hyperf\Validation\ValidatorFactory;
 
 class CouponCodeController extends BaseController
 {
+
+    /**
+     * @Inject()
+     * @var CouponCodeService
+     */
+    private $couponCodeService;
     /**
      * @Inject()
      * @var ValidatorFactory
@@ -88,24 +93,8 @@ class CouponCodeController extends BaseController
         {
             throw new ValidationException($validator);
         }
-
-        $couponCode = CouponCode::getFirstByWhere(['code' => $this->request->input('code')]);
-        if (!$couponCode || !$couponCode->enabled)
-        {
-            throw new ServiceException(404, '找不到优惠券');
-        }
-        if ($couponCode->total - $couponCode->used <= 0)
-        {
-            throw new ServiceException(403, '优惠券已经兑换完');
-        }
-        if ($couponCode->not_before && Carbon::createFromTimeString($couponCode->not_before) > Carbon::now())
-        {
-            throw new ServiceException(403, '优惠券还没到使用时间');
-        }
-        if ($couponCode->not_after && Carbon::createFromTimeString($couponCode->not_after) < Carbon::now())
-        {
-            throw new ServiceException(403, '优惠券已经过期');
-        }
+        $code = $this->request->input('code');
+        $couponCode = $this->couponCodeService->checkCouponCode($code);
 
         return $this->response->json(responseSuccess(200, '', $couponCode));
     }

@@ -71,8 +71,31 @@ class CouponCode extends ModelBase implements ModelInterface
         do
         {
             $code = strtoupper(Str::random(16));
-        }
-        while (self::query()->where('code', $code)->exists());
+        } while (self::query()->where('code', $code)->exists());
         $this->code = $code;
+    }
+
+    /***
+     * 获取使用优惠券后订单金额
+     * @param $orderAmount
+     * @return float
+     */
+    public function getAdjustedPrice($orderAmount)
+    {
+        if ($this->type === self::TYPE_FIXED)
+        {
+            return max(0.01, $orderAmount - $this->value);
+        }
+        return number_format($orderAmount * (100 - $this->value) / 100, 2, '.', '');
+    }
+
+    public function changeUsed($increase = true)
+    {
+        if ($increase)
+        {
+            return $this->newQuery()->where('id', $this->id)->where('used', '<', $this->total)->increment('used');
+        }
+
+        return $this->decrement('used');
     }
 }

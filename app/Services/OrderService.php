@@ -40,6 +40,12 @@ class OrderService
 
     /**
      * @Inject()
+     * @var CouponCodeService
+     */
+    private $couponService;
+
+    /**
+     * @Inject()
      * @var EmailQueueService
      */
     private $emailQueueService;
@@ -89,6 +95,16 @@ class OrderService
                 };
             }
 
+            if (array_key_exists('code', $orderData))
+            {
+                $couponCode = $this->couponService->checkCouponCode($orderData['code']);
+                $totalAmount = $couponCode->getAdjustedPrice($totalAmount);
+                $order->couponCode()->associate($couponCode);
+                if ($couponCode->changeUsed() <= 0)
+                {
+                    throw new ServiceException(403, '优惠券已经发光');
+                }
+            }
             $order->update(['total_amount' => $totalAmount]);
             $this->orderQueueService->pushCloseOrderJod($order, 500);
             $user->cartItems()->whereIn('product_sku_id', $skuIds)->delete();
