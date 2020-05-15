@@ -48,6 +48,11 @@ class Product extends ModelBase implements ModelInterface
         return $this->hasMany(ProductSku::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function deleted(Deleted $event)
     {
         Db::table('product_skus')->where('product_id', $this->id)->delete();
