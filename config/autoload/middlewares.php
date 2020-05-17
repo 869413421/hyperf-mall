@@ -14,7 +14,9 @@ declare(strict_types=1);
 
 return [
     'http' => [
+        \App\Middleware\CorsMiddleware::class,
         //验证组件，必须配置
-        \Hyperf\Validation\Middleware\ValidationMiddleware::class
+        \Hyperf\Validation\Middleware\ValidationMiddleware::class,
+
     ],
 ];
