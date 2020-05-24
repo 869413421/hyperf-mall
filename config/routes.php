@@ -66,6 +66,8 @@ Router::addGroup('', function ()
 //登陆用户访问路由
 Router::addGroup('/me', function ()
 {
+    //获取用户详情
+    Router::get('', 'App\Controller\UserController@show');
     //更新资料
     Router::patch('', 'App\Controller\UserController@update');
     //上传头像
@@ -163,6 +165,8 @@ Router::addGroup('/center', function ()
         Router::delete('/{id}', 'App\Controller\RoleController@delete');
         //为角色分配权限
         Router::patch('/{id}/permission', 'App\Controller\RoleController@assigningPermission');
+        //查看角色所有权限
+        Router::get('/{id}/permission', 'App\Controller\RoleController@rolePermissions');
     });
 
     //Product

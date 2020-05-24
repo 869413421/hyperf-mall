@@ -30,6 +30,11 @@ class RoleRequest extends FormRequest
                     'name' => 'required|unique:roles',
                     'guard_name' => 'required|string',
                     'description' => 'required|string|min:2|max:30',
+                    'permissionsIds' => 'required|array',
+                    'permissionsIds.*' => [
+                        'required',
+                        Rule::exists('permissions', 'id')
+                    ]
                 ];
                 break;
             case 'PATCH':
@@ -38,7 +43,13 @@ class RoleRequest extends FormRequest
                         'nullable',
                         Rule::unique('roles')->ignore($this->route('id'))
                     ],
+                    'guard_name' => 'nullable',
                     'description' => 'nullable|string|min:2|max:200',
+                    'permissionsIds' => 'required|array',
+                    'permissionsIds.*' => [
+                        'required',
+                        Rule::exists('permissions', 'id')
+                    ]
 
                 ];
                 break;

@@ -12,14 +12,19 @@ class PermissionController extends BaseController
 {
     public function index()
     {
-        $data = $this->getPaginateData(Permission::query()->paginate($this->getPageSize()));
-        return $this->response->json(responseSuccess(200, '', $data));
+        if ($this->getPageSize())
+        {
+            $data = $this->getPaginateData(Permission::query()->paginate($this->getPageSize()));
+            $data['all'] = Permission::query()->get()->toArray();
+            return $this->response->json(responseSuccess(200, '', $data));
+        }
+        return $this->response->json(responseSuccess(200, '', Permission::getMenuList()));
     }
 
     public function store(PermissionRequest $request)
     {
-        Permission::create($request->validated());
-        return $this->response->json(responseSuccess(201));
+        $permission = Permission::create($request->validated());
+        return $this->response->json(responseSuccess(201,'',$permission));
     }
 
     public function update(PermissionRequest $request)

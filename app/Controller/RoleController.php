@@ -19,20 +19,32 @@ class RoleController extends BaseController
 
     public function store(RoleRequest $request)
     {
-        Role::create($request->validated());
-        return $this->response->json(responseSuccess(201));
+        $permissionsIds = $request->input('permissionsIds');
+        $data = $request->validated();
+        unset($data['permissionsIds']);
+        $role = Role::create($data);
+
+        $role->permissions()->sync($permissionsIds);
+        $role=Role::query()->with('permissions')->where('id', $role->getKey())->first();
+        return $this->response->json(responseSuccess(201, '', $role));
     }
 
     public function update(RoleRequest $request)
     {
         $data = $request->validated();
+        /** @var $role Role */
         $role = Role::query()->where('id', $request->route('id'))->first();
         if (!$role)
         {
             throw new ServiceException(403, '角色不存在');
         }
+        $permissionsIds = $request->input('permissionsIds');
+        unset($data['permissionsIds']);
         $role->fill($data);
         $role->save();
+        $role->permissions()->detach($role->permissions()->select('id')->get()->pluck('id'));
+        $role->permissions()->sync($permissionsIds);
+
         return $this->response->json(responseSuccess(200, '更新成功'));
     }
 
@@ -50,6 +62,19 @@ class RoleController extends BaseController
         }
         $role->delete();
         return $this->response->json(responseSuccess(200, '删除成功'));
+    }
+
+    public function rolePermissions()
+    {
+        $id = $this->request->route('id');
+        /** @var $role Role */
+        $role = Role::query()->where('id', $id)->first();
+        if (!$role)
+        {
+            throw new ServiceException(403, '角色不存在');
+        }
+        $permissions = $role->permissions;
+        return $this->response->json(responseSuccess(200, '获取成功', $permissions));
     }
 
     public function assigningPermission(AssigningPermissionRequest $request)

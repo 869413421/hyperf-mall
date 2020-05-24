@@ -26,7 +26,7 @@ class PermissionRequest extends FormRequest
         {
             case 'POST':
                 return [
-                    'parent_id' => 'required|exists:permissions',
+                    'parent_id' => 'required|exists:permissions,id',
                     'url' => 'required|string|unique:permissions',
                     'name' => 'required|string|min:2|max:30|unique:permissions',
                     'display_name' => 'required|string|min:2|max:30',

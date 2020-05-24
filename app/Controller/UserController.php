@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\User;
 use App\Request\ResetPasswordRequest;
 use App\Request\UserRequest;
 use App\Services\UserService;
@@ -35,6 +36,25 @@ class UserController extends BaseController
         }
 
         return $this->response->json(responseSuccess(201, $message));
+    }
+
+    /***
+     * 获取用户详情
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function show()
+    {
+        /** @var $user User*/
+        $user = $this->request->getAttribute('user');
+        $roles = $user->roles()->select('name')->get()->pluck('name');
+        $userInfo = [
+            'name' => $user->user_name,
+            'avatar' => $user->avatar,
+            'introduction' => $user->user_name,
+            'roles' => $roles
+        ];
+        return $this->response->json(responseSuccess(200, '获取成功', $userInfo));
+
     }
 
     /**
