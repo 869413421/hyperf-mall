@@ -24,6 +24,13 @@ class PermissionRequest extends FormRequest
     {
         switch ($this->getMethod())
         {
+            case 'GET':
+                return [
+                    'name' => 'nullable|string|between:2,10',
+                    'parent_id' => 'nullable|exists:permissions,id',
+                    'sort' => 'nullable|in:ASC,DESC'
+                ];
+                break;
             case 'POST':
                 return [
                     'parent_id' => 'required|exists:permissions,id',

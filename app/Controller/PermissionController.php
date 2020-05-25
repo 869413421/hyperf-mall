@@ -10,11 +10,24 @@ use App\Request\PermissionRequest;
 
 class PermissionController extends BaseController
 {
-    public function index()
+    public function index(PermissionRequest $request)
     {
         if ($this->getPageSize())
         {
-            $data = $this->getPaginateData(Permission::query()->paginate($this->getPageSize()));
+            $query = Permission::query();
+            if ($name = $request->input('name'))
+            {
+                $query->where('name', 'like', "$name");
+            }
+            if ($parent_id = $request->input('parent_id'))
+            {
+                $query->where('parent_id', $parent_id);
+            }
+            if ($sort = $request->input('sort'))
+            {
+                $query->orderBy('id', $sort);
+            }
+            $data = $this->getPaginateData($query->paginate($this->getPageSize()));
             $data['all'] = Permission::query()->get()->toArray();
             return $this->response->json(responseSuccess(200, '', $data));
         }
@@ -24,7 +37,7 @@ class PermissionController extends BaseController
     public function store(PermissionRequest $request)
     {
         $permission = Permission::create($request->validated());
-        return $this->response->json(responseSuccess(201,'',$permission));
+        return $this->response->json(responseSuccess(201, '', $permission));
     }
 
     public function update(PermissionRequest $request)
