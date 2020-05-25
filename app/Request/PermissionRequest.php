@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Request;
 
+use App\Model\Permission;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
 
@@ -27,7 +28,19 @@ class PermissionRequest extends FormRequest
             case 'GET':
                 return [
                     'name' => 'nullable|string|between:2,10',
-                    'parent_id' => 'nullable|exists:permissions,id',
+                    'parent_id' => [
+                        'nullable',
+                        'integer',
+                        function ($attribute, $value, $fail)
+                        {
+                            $permission = Permission::query()->find($value);
+                            if (!$permission && $value != 0)
+                            {
+                                $fail('父级不存在');
+                                return;
+                            }
+                        }
+                    ],
                     'sort' => 'nullable|in:ASC,DESC'
                 ];
                 break;

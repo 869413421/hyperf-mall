@@ -21,15 +21,6 @@ class FileRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->path())
-        {
-            case 'user/avatar':
-                return $this->getUserAvatarRules();
-        }
-    }
-
-    private function getUserAvatarRules(): array
-    {
         switch ($this->getMethod())
         {
             case 'POST':

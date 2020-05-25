@@ -11,9 +11,36 @@ use App\Request\AdminRequest;
 
 class AdminController extends BaseController
 {
-    public function index()
+    public function index(AdminRequest $request)
     {
-        $data = $this->getPaginateData(User::with('roles')->paginate());
+        $query = User::query();
+        if ($user_name = $request->input('user_name'))
+        {
+            $query->where('user_name', 'like', "%$user_name%");
+        }
+        if ($role_id = $request->input('role_id'))
+        {
+            $query->whereHas('roles', function ($query) use ($role_id)
+            {
+                $query->where('id', $role_id);
+            });
+        }
+        else
+        {
+            $query->with('roles');
+        }
+        $status = $request->input('status');
+        if ($status != null)
+        {
+            $query->where('status', $status);
+        }
+        if ($sort = $request->input('sort'))
+        {
+            $query->orderBy('id', $sort);
+        }
+
+        $data = $this->getPaginateData($query->paginate($this->getPageSize()));
+        $data['roles'] = Role::query()->get()->toArray();
         return $this->response->json(responseSuccess(200, '', $data));
     }
 

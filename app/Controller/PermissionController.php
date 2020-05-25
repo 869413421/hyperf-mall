@@ -19,7 +19,8 @@ class PermissionController extends BaseController
             {
                 $query->where('name', 'like', "$name");
             }
-            if ($parent_id = $request->input('parent_id'))
+            $parent_id = $request->input('parent_id');
+            if ($parent_id != null)
             {
                 $query->where('parent_id', $parent_id);
             }

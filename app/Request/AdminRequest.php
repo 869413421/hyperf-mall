@@ -24,6 +24,14 @@ class AdminRequest extends FormRequest
     {
         switch ($this->getMethod())
         {
+            case 'GET':
+                return [
+                    'user_name' => 'nullable|between:2,10',
+                    'role_id' => 'nullable|exists:roles,id',
+                    'sort' => 'nullable|in:DESC,ASC',
+                    'status' => 'nullable|in:0,1'
+                ];
+                break;
             case 'POST':
                 $rules = [
                     'user_name' => 'required|unique:users',
@@ -47,7 +55,7 @@ class AdminRequest extends FormRequest
                         'email',
                         Rule::unique('users')->ignore($this->route('id')),
                     ],
-                    'password' => 'required|alpha_dash|min:6',
+                    'password' => 'nullable|alpha_dash|min:6',
                     'phone' => [
                         'nullable',
                         Rule::unique('users')->ignore($this->route('id')),

@@ -123,19 +123,19 @@ Router::addGroup('/center', function ()
     //Admin
     Router::addGroup('/admin', function ()
     {
-        //获取管理员列表
+        //获取用户列表
         Router::get('', 'App\Controller\AdminController@index');
-        //创建管理员
+        //创建用户
         Router::post('', 'App\Controller\AdminController@store');
-        //更新管理员
+        //更新用户
         Router::patch('/{id}', 'App\Controller\AdminController@update');
-        //删除管理员
+        //删除用户
         Router::delete('/{id}', 'App\Controller\AdminController@delete');
-        //更改管理员禁用状态
+        //更改用户禁用状态
         Router::patch('/{id}/status', 'App\Controller\AdminController@disable');
-        //重置管理员密码
+        //重置用户密码
         Router::patch('/{id}/password', 'App\Controller\AdminController@resetPassword');
-        //为管理员分配角色
+        //为用户分配角色
         Router::patch('/{id}/role/{role_id}', 'App\Controller\AdminController@AssigningRole');
     });
 
