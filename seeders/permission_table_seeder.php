@@ -103,15 +103,6 @@ class PermissionTableSeeder extends Seeder
                 'sort' => 0
             ],
             [
-                'id' => 35,
-                'parent_id' => 3,
-                'url' => '/center/role/{id}/permission/get',
-                'name' => '查看角色所有权限',
-                'display_name' => '查看角色所有权限',
-                'guard_name' => 'admin',
-                'sort' => 0
-            ],
-            [
                 'id' => 11,
                 'parent_id' => 4,
                 'url' => '/center/permission/post',
@@ -324,6 +315,51 @@ class PermissionTableSeeder extends Seeder
                 'url' => '/center/couponCode/{id}/delete',
                 'name' => '删除优惠券',
                 'display_name' => '删除优惠券',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ],
+            [
+                'id' => 35,
+                'parent_id' => 3,
+                'url' => '/center/role/{id}/permission/get',
+                'name' => '查看角色所有权限',
+                'display_name' => '查看角色所有权限',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ],
+            [
+                'id' => 36,
+                'parent_id' => 0,
+                'url' => '/center/category/get',
+                'name' => '分类管理',
+                'display_name' => '分类管理',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ],
+            [
+                'id' => 37,
+                'parent_id' => 36,
+                'url' => '/center/category/post',
+                'name' => '新增分类',
+                'display_name' => '新增分类',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ],
+            [
+                'id' => 38,
+                'parent_id' => 36,
+                'url' => '/center/category/{id}/patch',
+                'name' => '更新分类',
+                'display_name' => '更新分类',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ],
+            [
+                'id' => 39,
+                'parent_id' => 36,
+                'url' => '/center/category/{id}/delete',
+                'name' => '删除分类',
+                'display_name' => '删除分类',
                 'guard_name' => 'admin',
                 'sort' => 0
             ]

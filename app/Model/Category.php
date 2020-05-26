@@ -58,6 +58,12 @@ class Category extends ModelBase implements ModelInterface
         {
             $this->level = $this->parent->level + 1;
             $this->path = $this->parent->path . $this->parent_id . '-';
+            //更新父级是否有子目录字段
+            if ($this->parent->is_directory == 0)
+            {
+                $this->parent->is_directory = 1;
+                $this->parent->save();
+            }
         }
     }
 

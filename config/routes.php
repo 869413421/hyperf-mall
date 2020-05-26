@@ -221,4 +221,17 @@ Router::addGroup('/center', function ()
         Router::delete('/{id}', 'App\Controller\CouponCodeController@delete');
     });
 
+    //Category
+    Router::addGroup('/category', function ()
+    {
+        //分类列表
+        Router::get('', 'App\Controller\CategoryController@index');
+        //创建分类
+        Router::post('', 'App\Controller\CategoryController@store');
+        //更新分类
+        Router::patch('/{id}', 'App\Controller\CategoryController@update');
+        //删除分类
+        Router::delete('/{id}', 'App\Controller\CategoryController@delete');
+    });
+
 }, ['middleware' => $adminMiddleWare]);
