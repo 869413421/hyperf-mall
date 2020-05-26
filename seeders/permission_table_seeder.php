@@ -141,7 +141,7 @@ class PermissionTableSeeder extends Seeder
             [
                 'id' => 15,
                 'parent_id' => 2,
-                'url' => '/center/admin/delete',
+                'url' => '/center/admin/{id}/delete',
                 'name' => '删除用户',
                 'display_name' => '删除用户',
                 'guard_name' => 'admin',
@@ -365,7 +365,7 @@ class PermissionTableSeeder extends Seeder
             ]
         ]);
         $role = \App\Model\Role::create([
-            'name' => '超级管理员',
+            'name' => 'admin',
             'guard_name' => 'admin',
             'description' => '超级管理员'
         ]);

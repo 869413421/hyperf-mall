@@ -13,7 +13,7 @@ class AdminController extends BaseController
 {
     public function index(AdminRequest $request)
     {
-        $query = User::query();
+        $query = User::query()->with('roles');
         if ($user_name = $request->input('user_name'))
         {
             $query->where('user_name', 'like', "%$user_name%");
@@ -24,10 +24,6 @@ class AdminController extends BaseController
             {
                 $query->where('id', $role_id);
             });
-        }
-        else
-        {
-            $query->with('roles');
         }
         $status = $request->input('status');
         if ($status != null)
@@ -48,8 +44,13 @@ class AdminController extends BaseController
     {
         $data = $request->validated();
         $data['password'] = md5($data['password']);
-        User::query()->create($data);
-        return $this->response->json(responseSuccess(201));
+        $user = User::query()->create($data);
+        if ($role_id = $request->input('role_id'))
+        {
+            $user->roles()->sync($role_id);
+        }
+        $user = User::with('roles')->where('id', $user->id)->first();
+        return $this->response->json(responseSuccess(201, '', $user));
     }
 
     public function update(AdminRequest $request)
@@ -66,7 +67,12 @@ class AdminController extends BaseController
             throw new ServiceException(403, '用户不存在');
         }
         $user->fill($data)->save();
-        return $this->response->json(responseSuccess(200, '更新成功'));
+        if ($role_id = $request->input('role_id'))
+        {
+            $user->roles()->sync($role_id);
+        }
+        $user = User::with('roles')->where('id', $user->id)->first();
+        return $this->response->json(responseSuccess(200, '', $user));
     }
 
     public function delete(AdminRequest $request)

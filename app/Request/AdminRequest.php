@@ -40,7 +40,8 @@ class AdminRequest extends FormRequest
                     'phone' => 'required_without:email|unique:users',
                     'real_name' => 'nullable|string|max:50',
                     'sex' => 'nullable|integer|max:2',
-                    'avatar' => 'nullable|url'
+                    'avatar' => 'nullable|url',
+                    'role_id'=>'nullable|exists:roles,id'
                 ];
                 return $rules;
                 break;
@@ -62,7 +63,8 @@ class AdminRequest extends FormRequest
                     ],
                     'real_name' => 'nullable|string|max:50',
                     'sex' => 'nullable|integer|max:2',
-                    'avatar' => 'nullable|url'
+                    'avatar' => 'nullable|url',
+                    'role_id'=>'nullable|exists:roles,id'
                 ];
                 return $rules;
                 break;
