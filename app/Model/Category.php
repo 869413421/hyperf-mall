@@ -5,6 +5,8 @@ declare (strict_types=1);
 namespace App\Model;
 
 use Hyperf\Database\Model\Events\Creating;
+use Hyperf\Database\Model\Events\Deleting;
+use Hyperf\Database\Model\Events\Updated;
 
 /**
  * @property int $id
@@ -49,6 +51,35 @@ class Category extends ModelBase implements ModelInterface
 
     public function creating(Creating $event)
     {
+        $this->initParentParams();
+    }
+
+    public function updated(Updated $event)
+    {
+        $this->initParentParams();
+    }
+
+    public function deleting(Deleting $event)
+    {
+        //删除所有下级
+        $this->newQuery()->where('path', 'like', "-$this->id%")->delete();
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * 根据父级初始化参数
+     */
+    public function initParentParams()
+    {
         if (is_null($this->parent_id))
         {
             $this->level = 0;
@@ -65,16 +96,6 @@ class Category extends ModelBase implements ModelInterface
                 $this->parent->save();
             }
         }
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function children()
-    {
-        return $this->hasMany(Category::class, 'parent_id');
     }
 
     /***

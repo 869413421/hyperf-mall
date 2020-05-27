@@ -28,9 +28,12 @@ class CategoryRequest extends FormRequest
                     'name' => 'required|string|between:2,10',
                     'parent_id' => 'nullable|exists:categories,id'
                 ];
+                break;
+            case 'PATCH':
+                return [
+                    'name' => 'nullable|string|between:2,10',
+                    'parent_id' => 'nullable|exists:categories,id'
+                ];
         }
-        return [
-
-        ];
     }
 }

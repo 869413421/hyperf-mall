@@ -28,6 +28,8 @@ $adminMiddleWare = [
 Router::addGroup('', function ()
 {
     Router::get('/test', 'App\Controller\IndexController@test');
+    //获取分类菜单
+    Router::get('/category', 'App\Controller\CategoryController@menu');
     //用户注册
     Router::post('/user', 'App\Controller\UserController@store');
     //获取用户token
