@@ -9,6 +9,7 @@ use Hyperf\DbConnection\Db;
 
 /**
  * @property int $id
+ * @property string $type
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $title
@@ -22,6 +23,13 @@ use Hyperf\DbConnection\Db;
  */
 class Product extends ModelBase implements ModelInterface
 {
+    const TYPE_NORMAL = 'normal';
+    const TYPE_CROWDFUNDING = 'crowdfunding';
+    public static $typeMap = [
+        self::TYPE_NORMAL => '普通商品',
+        self::TYPE_CROWDFUNDING => '众筹商品',
+    ];
+
     /**
      * The table associated with the model.
      *
@@ -46,6 +54,11 @@ class Product extends ModelBase implements ModelInterface
     public function skus()
     {
         return $this->hasMany(ProductSku::class);
+    }
+
+    public function crowdfunding()
+    {
+        return $this->hasOne(CrowdfundingProduct::class);
     }
 
     public function category()

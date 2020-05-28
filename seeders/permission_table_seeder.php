@@ -363,6 +363,46 @@ class PermissionTableSeeder extends Seeder
                 'guard_name' => 'admin',
                 'sort' => 0
             ]
+            ,
+            [
+                'id' => 40,
+                'parent_id' => 0,
+                'url' => '/center/crowdfunding/get',
+                'name' => '众筹商品管理',
+                'display_name' => '众筹商品管理',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 41,
+                'parent_id' => 40,
+                'url' => '/center/crowdfunding/post',
+                'name' => '众筹商品添加',
+                'display_name' => '众筹商品添加',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 42,
+                'parent_id' => 40,
+                'url' => '/center/crowdfunding/{id}/patch',
+                'name' => '众筹商品更新',
+                'display_name' => '众筹商品更新',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 43,
+                'parent_id' => 40,
+                'url' => '/center/crowdfunding/{id}/delete',
+                'name' => '众筹商品删除',
+                'display_name' => '众筹商品删除',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
         ]);
         $role = \App\Model\Role::create([
             'name' => 'admin',

@@ -34,7 +34,7 @@ Router::addGroup('', function ()
     Router::post('/user', 'App\Controller\UserController@store');
     //获取用户token
     Router::post('/user/token', 'App\Controller\TokenController@store');
-    //重置用户密码，TODO
+    //重置用户密码
     Router::patch('/user/password', 'App\Controller\UserController@resetPassword');
     //重发验证邮件
     Router::post('/user/identity/email', 'App\Controller\EmailController@sendVerifyEmail');
@@ -234,6 +234,19 @@ Router::addGroup('/center', function ()
         Router::patch('/{id}', 'App\Controller\CategoryController@update');
         //删除分类
         Router::delete('/{id}', 'App\Controller\CategoryController@delete');
+    });
+
+    //Crowdfunding
+    Router::addGroup('/crowdfunding', function ()
+    {
+        //众筹商品列表
+        Router::get('', 'App\Controller\CrowdfundingController@index');
+        //创建众筹商品
+        Router::post('', 'App\Controller\CrowdfundingController@store');
+        //更新众筹商品
+        Router::patch('/{id}', 'App\Controller\CrowdfundingController@update');
+        //删除众筹商品
+        Router::delete('/{id}', 'App\Controller\CrowdfundingController@delete');
     });
 
 }, ['middleware' => $adminMiddleWare]);
