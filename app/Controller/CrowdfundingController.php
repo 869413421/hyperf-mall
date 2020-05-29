@@ -20,7 +20,7 @@ class CrowdfundingController extends BaseController
 
     public function index()
     {
-        $query = Product::query()->with('crowdfunding')->where('type', Product::TYPE_CROWDFUNDING);
+        $query = Product::query()->with(['crowdfunding', 'skus'])->where('type', Product::TYPE_CROWDFUNDING);
         $data = $this->getPaginateData($query->paginate($this->getPageSize()));
         return $this->response->json(responseSuccess(200, '', $data));
     }
@@ -48,6 +48,12 @@ class CrowdfundingController extends BaseController
 
     public function delete()
     {
-
+        $crowdfunding = CrowdfundingProduct::getFirstById($this->request->route('id'));
+        if (!$crowdfunding)
+        {
+            throw new ServiceException(403, '商品不存在');
+        }
+        $crowdfunding->delete();
+        return $this->response->json(responseSuccess(200, '删除成功'));
     }
 }

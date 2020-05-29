@@ -8,6 +8,7 @@ use Hyperf\Database\Model\Events\Creating;
 
 /**
  * @property int $id
+ * @property string $type
  * @property string $no
  * @property int $user_id
  * @property string $address
@@ -28,6 +29,14 @@ use Hyperf\Database\Model\Events\Creating;
  */
 class Order extends ModelBase implements ModelInterface
 {
+    const TYPE_NORMAL = 'normal';
+    const TYPE_CROWDFUNDING = 'crowdfunding';
+
+    public static $typeMap = [
+        self::TYPE_NORMAL => '普通商品订单',
+        self::TYPE_CROWDFUNDING => '众筹商品订单',
+    ];
+
     const REFUND_STATUS_PENDING = 'pending';
     const REFUND_STATUS_APPLIED = 'applied';
     const REFUND_STATUS_PROCESSING = 'processing';
@@ -64,6 +73,7 @@ class Order extends ModelBase implements ModelInterface
      * @var array
      */
     protected $fillable = [
+        'type',
         'no',
         'address',
         'total_amount',
@@ -111,5 +121,12 @@ class Order extends ModelBase implements ModelInterface
         {
             $this->no = getUUID('order');
         }
+    }
+
+    public function getCrowdfundingStatusAttribute()
+    {
+        $item = $this->items()->first();
+        /** @var $item OrderItem * */
+        return $item->product->crowdfunding->status;
     }
 }

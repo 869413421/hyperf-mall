@@ -4,6 +4,8 @@ declare (strict_types=1);
 
 namespace App\Model;
 
+use Hyperf\Database\Model\Events\Deleting;
+
 /**
  * @property int $id
  * @property \Carbon\Carbon $created_at
@@ -12,7 +14,7 @@ namespace App\Model;
  * @property float $target_amount
  * @property float $total_amount
  * @property int $user_count
- * @property string $end_time
+ * @property \Carbon\Carbon $end_time
  * @property string $status
  */
 class CrowdfundingProduct extends ModelBase implements ModelInterface
@@ -38,13 +40,15 @@ class CrowdfundingProduct extends ModelBase implements ModelInterface
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'target_amount', 'product_id', 'end_time', 'total_amount', 'user_count'
+    ];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'product_id' => 'integer', 'target_amount' => 'float', 'total_amount' => 'float', 'user_count' => 'integer'];
+    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'product_id' => 'integer', 'target_amount' => 'float', 'total_amount' => 'float', 'user_count' => 'integer', 'end_time' => 'datetime'];
 
     public function getPercentAttribute()
     {
@@ -55,5 +59,17 @@ class CrowdfundingProduct extends ModelBase implements ModelInterface
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function deleting(Deleting $event)
+    {
+        /** @var  $product  Product */
+        $product = $this->product;
+        foreach ($product->skus as $productSku)
+        {
+            /** @var $productSku ProductSku */
+            $productSku->delete();
+        }
+        $product->delete();
     }
 }

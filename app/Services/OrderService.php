@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exception\ServiceException;
+use App\Model\CrowdfundingProduct;
 use App\Model\Order;
 use App\Model\OrderItem;
 use App\Model\ProductSku;
@@ -59,6 +60,7 @@ class OrderService
             $address->update(['last_used_at' => Carbon::now()]);
             //填充订单
             $order = new Order([
+                'type' => Order::TYPE_NORMAL,
                 'address' => [
                     'address' => $address->full_address,
                     'zip' => $address->zip,
@@ -123,6 +125,66 @@ class OrderService
         return $order;
     }
 
+    public function crowdfunding(User $user, $orderData): Order
+    {
+        $order = Db::transaction(function () use ($user, $orderData)
+        {
+            //更新收货地址最后使用日期
+            $address = UserAddress::getFirstById($orderData['address_id']);
+            $address->update(['last_used_at' => Carbon::now()]);
+            //填充订单
+            $order = new Order([
+                'type' => Order::TYPE_CROWDFUNDING,
+                'address' => [
+                    'address' => $address->full_address,
+                    'zip' => $address->zip,
+                    'contact_name' => $address->contact_name,
+                    'contact_phone' => $address->contact_phone,
+                ],
+                'remark' => array_key_exists('remark', $orderData) ? $orderData['remark'] : '',
+                'total_amount' => 0
+            ]);
+            $order->user()->associate($user);
+            $order->save();
+
+            $totalAmount = 0;
+            $skuIds = [];
+            $crowdfunding = null;
+            //插入子订单
+            foreach ($orderData['items'] as $data)
+            {
+                $skuIds[] = $data['sku_id'];
+                $productSku = ProductSku::getFirstById($data['sku_id']);
+                $crowdfunding = $productSku->product->crowdfunding;
+                /**@var $item \App\Model\OrderItem * */
+                $item = $order->items()->make([
+                    'price' => $productSku->price,
+                    'amount' => $data['amount'],
+                ]);
+
+                $item->product()->associate($productSku->product_id);
+                $item->productSku()->associate($productSku);
+                $item->save();
+
+                $totalAmount += $productSku->price * $item['amount'];
+
+                if ($productSku->decreaseStock($data['amount']) <= 0)
+                {
+                    throw new ServiceException(403, "{$productSku->title},库存不足");
+                };
+            }
+
+            /** @var  $crowdfunding CrowdfundingProduct */
+            $timeOutTtl = $crowdfunding->end_time->getTimestamp() - time();
+            $order->update(['total_amount' => $totalAmount]);
+            $this->orderQueueService->pushCloseOrderJod($order, $timeOutTtl);
+
+            return $order;
+        });
+
+        return $order;
+    }
+
     /**
      * 订单发货
      * @param Order $order *订单
@@ -138,6 +200,10 @@ class OrderService
         if ($order->ship_status != Order::SHIP_STATUS_PENDING)
         {
             throw new ServiceException(403, '该订单已经发货');
+        }
+        if ($order->type === Order::TYPE_CROWDFUNDING && $order->crowdfunding_status !== CrowdfundingProduct::STATUS_SUCCESS)
+        {
+            throw new ServiceException(403, '众筹成功后才可以发货');
         }
 
         $order->update([
@@ -208,7 +274,6 @@ class OrderService
         {
             foreach ($reviews as $review)
             {
-                var_dump($review);
                 $orderItem = OrderItem::getFirstById($review['id']);
                 $orderItem->update([
                     'rating' => $review['rating'],
@@ -233,13 +298,13 @@ class OrderService
         {
             throw new ServiceException(403, '该订单未付款');
         }
-        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED)
-        {
-            throw new ServiceException(403, '订单没收货');
-        }
         if ($order->user_id !== authUser()->id)
         {
             throw new ServiceException(403, '没有权限操作此订单');
+        }
+        if ($order->type === Order::TYPE_CROWDFUNDING)
+        {
+            throw new ServiceException(403, '众筹订单不允许主动退款');
         }
         if ($order->refund_status !== Order::REFUND_STATUS_PENDING)
         {

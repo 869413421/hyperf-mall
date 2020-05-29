@@ -106,6 +106,8 @@ Router::addGroup('/me', function ()
     Router::get('/order', 'App\Controller\OrderController@index');
     //创建新订单
     Router::post('/order', 'App\Controller\OrderController@store');
+    //创建众筹订单
+    Router::post('/order/crowdfunding', 'App\Controller\OrderController@crowdfunding');
     //支付支付宝订单
     Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
     //支付微信订单

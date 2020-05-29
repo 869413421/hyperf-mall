@@ -8,6 +8,8 @@ use App\Exception\ServiceException;
 use App\Model\Order;
 use App\Model\User;
 use App\Request\ApplyRefundRequest;
+use App\Request\CrowdfundingOrderRequest;
+use App\Request\CrowdfundingRequest;
 use App\Request\HandleRefundRequest;
 use App\Request\OrderRequest;
 use App\Request\ReviewRequest;
@@ -49,6 +51,12 @@ class OrderController extends BaseController
     {
         $order = $this->service->createOrder($request->getAttribute('user'), $request->validated());
 
+        return $this->response->json(responseSuccess(201, '', $order));
+    }
+
+    public function crowdfunding(CrowdfundingOrderRequest $request)
+    {
+        $order = $this->service->crowdfunding($request->getAttribute('user'), $request->validated());
         return $this->response->json(responseSuccess(201, '', $order));
     }
 
