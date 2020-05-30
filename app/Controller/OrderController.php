@@ -136,6 +136,7 @@ class OrderController extends BaseController
         $agree = $request->input('agree');
         if ($agree)
         {
+            //同意退款
             $this->service->refund($order);
         }
         else

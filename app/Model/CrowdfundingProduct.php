@@ -41,7 +41,7 @@ class CrowdfundingProduct extends ModelBase implements ModelInterface
      * @var array
      */
     protected $fillable = [
-        'target_amount', 'product_id', 'end_time', 'total_amount', 'user_count'
+        'target_amount', 'product_id', 'end_time', 'total_amount', 'user_count','status'
     ];
     /**
      * The attributes that should be cast to native types.

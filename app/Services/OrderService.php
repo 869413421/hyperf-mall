@@ -354,10 +354,6 @@ class OrderService
     public function refund(Order $order)
     {
         $this->checkOrderRefundStatus($order);
-        if ($order->user_id !== authUser()->id)
-        {
-            throw new ServiceException(403, '没有权限操作此订单');
-        }
 
         switch ($order->payment_method)
         {
@@ -370,6 +366,8 @@ class OrderService
             default:
                 throw new ServiceException(403, '未知支付方式');
         }
+
+        return true;
     }
 
     public function checkOrderRefundStatus(Order $order)
@@ -377,10 +375,6 @@ class OrderService
         if (!$order->paid_at)
         {
             throw new ServiceException(403, '该订单未付款');
-        }
-        if ($order->ship_status !== Order::SHIP_STATUS_RECEIVED)
-        {
-            throw new ServiceException(403, '订单没收货');
         }
         if ($order->refund_status !== Order::REFUND_STATUS_APPLIED)
         {
