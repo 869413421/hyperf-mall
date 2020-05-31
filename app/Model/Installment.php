@@ -5,6 +5,8 @@ declare (strict_types=1);
 namespace App\Model;
 
 use Hyperf\Database\Model\Events\Creating;
+use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\Database\Model\Events\Deleting;
 
 /**
  * @property int $id
@@ -62,6 +64,11 @@ class Installment extends ModelBase implements ModelInterface
         {
             $this->no = getUUID('installments');
         }
+    }
+
+    public function deleting(Deleting $event)
+    {
+        InstallmentItem::query()->where('installment_id', $this->id)->delete();
     }
 
 
