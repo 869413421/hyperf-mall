@@ -11,7 +11,11 @@ namespace App\Services;
 use App\Event\PaySuccessEvent;
 use App\Event\RefundSuccessEvent;
 use App\Exception\ServiceException;
+use App\Handler\Pay\AliPay;
 use App\Handler\Pay\PayFactory;
+use App\Handler\Pay\WeChatPay;
+use App\Model\Installment;
+use App\Model\InstallmentItem;
 use App\Model\Order;
 use Carbon\Carbon;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -27,6 +31,12 @@ class WeChatPayService
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
+    /**
+     * @Inject()
+     * @var InstallmentService
+     */
+    private $installmentService;
 
     /**
      * @Inject()
@@ -59,6 +69,56 @@ class WeChatPayService
         }
 
         return $this->pay->webPay($order->no, $order->total_amount, $order->no)->getContent();
+    }
+
+    /**
+     * 分期支付成功服务器回调
+     * @param $data
+     */
+    public function installmentAliPayNotify($data)
+    {
+        if ($this->installmentService->paid($data))
+        {
+            $this->pay->success();
+        }
+    }
+
+    /**
+     * 支付分期订单
+     * @param Installment $installment *分期订单
+     * @return mixed
+     */
+    public function installmentPay(Installment $installment)
+    {
+        if ($installment->user_id !== authUser()->id)
+        {
+            throw new ServiceException(403, '没有权限');
+        }
+        if ($installment->order->closed)
+        {
+            throw new ServiceException(403, '订单已经关闭');
+        }
+        if ($installment->status === Installment::STATUS_FINISHED)
+        {
+            throw new ServiceException(403, '订单已结清');
+        }
+
+        $nextInstallment = InstallmentItem::query()->where('installment_id', $installment->id)
+            ->whereNull('paid_at')->orderBy('sequence')
+            ->first();
+        if (!$nextInstallment)
+        {
+            throw new ServiceException(403, '订单已结清');
+        }
+        //修改分期支付回调地址
+        $config = config('pay.wechat');
+
+        $config['notify_url'] = config('host') . 'wechat/pay/installment/web/service';
+        $pay = new WeChatPay($config);
+        $no = $installment->no . '_' . $nextInstallment->sequence;
+        $total = $nextInstallment->total;
+        $subject = '支付分期订单：' . $no;
+        return $pay->webPay($no, $total, $subject)->getContent();
     }
 
     public function weChatPayNotify($data)
@@ -135,6 +195,69 @@ class WeChatPayService
         }
 
         $this->eventDispatcher->dispatch(new RefundSuccessEvent($order));
+        return $this->pay->success();
+    }
+
+    public function installmentRefundNotify(array $responseData)
+    {
+        // 给微信的失败响应
+        $failXml = '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[FAIL]]></return_msg></xml>';
+        $data = $this->pay->verify($responseData, true);
+
+        $paramsArr = explode('_', $data['out_refund_no']);
+        $prefix = $paramsArr[0];
+        $no = $paramsArr[1];
+        $sequence = $paramsArr[2];
+        $item = InstallmentItem::query()
+            ->whereHas('installment', function ($query) use ($no)
+            {
+                $query->whereHas('order', function ($query) use ($no)
+                {
+                    $query->where('refund_no', $no); // 根据订单表的退款流水号找到对应还款计划
+                });
+            })
+            ->where('sequence', $sequence)
+            ->first();
+
+        // 没有找到对应的订单，原则上不可能发生，保证代码健壮性
+        if (!$item)
+        {
+            return $failXml;
+        }
+
+        // 如果退款成功
+        if ($data['refund_status'] === 'SUCCESS')
+        {
+            // 将还款计划退款状态改成退款成功
+            $item->update([
+                'refund_status' => InstallmentItem::REFUND_STATUS_SUCCESS,
+            ]);
+            // 设定一个标志位
+            $allSuccess = true;
+            foreach ($item->installment->items as $item)
+            {
+                if ($item->paid_at && $item->refund_status !== InstallmentItem::REFUND_STATUS_SUCCESS)
+                {
+                    $allSuccess = false;
+                    break;
+                }
+            }
+            // 如果所有退款都成功，则将对应商品订单的退款状态修改为退款成功
+            if ($allSuccess)
+            {
+                $item->installment->order->update([
+                    'refund_status' => Order::REFUND_STATUS_SUCCESS,
+                ]);
+            }
+        }
+        else
+        {
+            // 否则将对应还款计划的退款状态改为退款失败
+            $item->update([
+                'refund_status' => InstallmentItem::REFUND_STATUS_FAILED,
+            ]);
+        }
+
         return $this->pay->success();
     }
 }

@@ -59,11 +59,15 @@ Router::addGroup('', function ()
     Router::post('/ali/pay/installment/web/service', 'App\Controller\AliPayController@installmentAliPayNotify');
 
     //微信支付服务器回调
-    Router::post('/wechat/pay/web/service', 'App\Controller\WeChatPayController@aliPayNotify');
+    Router::post('/wechat/pay/web/service', 'App\Controller\WeChatPayController@weChatPayNotify');
     //微信退款服务器回调
-    Router::post('/wechat/pay/refund/service', 'App\Controller\WeChatPayController@aliPayNotify');
+    Router::post('/wechat/pay/refund/service', 'App\Controller\WeChatPayController@refundNotify');
+    //微信分期退款服务器回调
+    Router::post('/wechat/installment/pay/refund/service', 'App\Controller\WeChatPayController@installmentRefundNotify');
     //检查优惠券
     Router::get('/couponCode', 'App\Controller\CouponCodeController@couponCodeStatus');
+    //分期支付支付宝网页支付服务器回调
+    Router::post('/wechat/pay/installment/web/service', 'App\Controller\WeChatPayController@installmentAliPayNotify');
 
 });
 
@@ -127,8 +131,10 @@ Router::addGroup('/me', function ()
     Router::get('/installment', 'App\Controller\InstallmentController@index');
     //获取用户分期详情
     Router::get('/installment/{id}', 'App\Controller\InstallmentController@show');
-    //阿里云分期支付
+    //支付宝分期支付
     Router::post('/installment/{id}/ali/pay', 'App\Controller\AliPayController@installmentPay');
+    //微信分期支付
+    Router::post('/installment/{id}/wechat/pay', 'App\Controller\WeChatPayController@installmentPay');
 
 
 }, ['middleware' => $authMiddleWare]);

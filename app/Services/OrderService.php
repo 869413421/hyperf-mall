@@ -357,7 +357,16 @@ class OrderService
 
         switch ($order->payment_method)
         {
+            case 'installment':
+                $order->update([
+                    'refund_no' => getUUID('refund'), // 生成退款订单号
+                    'refund_status' => Order::REFUND_STATUS_PROCESSING, // 将退款状态改为退款中
+                ]);
+                // 触发退款异步任务
+                $this->orderQueueService->pushRefundInstallmentOrderJob($order, 5);
+                break;
             case 'alipay':
+                //耗时长，后期修改为异步任务
                 $this->aliPayService->refund($order);
                 break;
             case 'wechat':

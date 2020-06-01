@@ -30,6 +30,12 @@ class AliPayService
      */
     private $eventDispatcher;
 
+    /**
+     * @Inject()
+     * @var InstallmentService
+     */
+    private $installmentService;
+
 
     public function __construct(PayFactory $factory)
     {
@@ -103,58 +109,10 @@ class AliPayService
      */
     public function installmentAliPayNotify($data)
     {
-        $paramsArr = explode('_', $data['out_trade_no']);
-        $prefix = $paramsArr[0];
-        $no = $paramsArr[1];
-        $sequence = $paramsArr[2];
-        /** @var $installment Installment */
-        $installment = Installment::query()->where('no', $prefix . '_' . $no)->first();
-        if (!$installment)
-        {
-            //DoSomeThing
-            return;
-        }
-
-        // 根据还款计划编号查询对应的还款计划，原则上不会找不到，这里的判断只是增强代码健壮性
-        if (!$item = $installment->items()->where('sequence', $sequence)->first())
-        {
-            return;
-        }
-
-        if ($item->paid_at)
+        if ($this->installmentService->paid($data))
         {
             $this->pay->success();
         }
-
-        $item->update([
-            'paid_at' => Carbon::now(), // 支付时间
-            'payment_method' => 'alipay', // 支付方式
-            'payment_no' => $data['trade_no'], // 支付宝订单号
-        ]);
-
-        // 如果这是第一笔还款
-        if ($item->sequence === 0)
-        {
-            // 将分期付款的状态改为还款中
-            $installment->update(['status' => Installment::STATUS_REPAYING]);
-            // 将分期付款对应的商品订单状态改为已支付
-            $installment->order->update([
-                'paid_at' => Carbon::now(),
-                'payment_method' => 'installment', // 支付方式为分期付款
-                'payment_no' => $no, // 支付订单号为分期付款的流水号
-            ]);
-            // 触发商品订单已支付的事件
-            $this->eventDispatcher->dispatch(new PaySuccessEvent($installment->order));
-        }
-
-        // 如果这是最后一笔还款
-        if ($item->sequence === $installment->count - 1)
-        {
-            // 将分期付款状态改为已结清
-            $installment->update(['status' => Installment::STATUS_FINISHED]);
-        }
-
-        $this->pay->success();
     }
 
     /**

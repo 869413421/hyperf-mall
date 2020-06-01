@@ -15,6 +15,7 @@ use Hyperf\Utils\Parallel;
 use Psr\Container\ContainerInterface;
 
 /**
+ * 众筹结束业务
  * @Command
  */
 class FinishCrowdfuning extends HyperfCommand
