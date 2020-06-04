@@ -27,7 +27,7 @@ return [
             'connect_timeout' => 10.0,
             'wait_timeout' => 3.0,
             'heartbeat' => -1,
-            'max_idle_time' => (float) env('DB_MAX_IDLE_TIME', 60),
+            'max_idle_time' => (float)env('DB_MAX_IDLE_TIME', 60),
         ],
         'commands' => [
             'gen:model' => [
@@ -37,4 +37,8 @@ return [
             ],
         ],
     ],
+    'elasticsearch' => [
+        // Elasticsearch 支持多台服务器负载均衡，因此这里是一个数组
+        'hosts' => explode(',', env('ES_HOSTS')),
+    ]
 ];
