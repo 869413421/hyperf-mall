@@ -142,11 +142,27 @@ if (!function_exists('authUser'))
     }
 }
 
-if(!function_exists('big_number'))
+if (!function_exists('big_number'))
 {
     // 默认的精度为小数点后两位
     function big_number($number, $scale = 2)
     {
         return new \Moontoast\Math\BigNumber($number, $scale);
+    }
+}
+
+if (!function_exists('array_only'))
+{
+    function array_only(array $arr, array $keys)
+    {
+        $new_arr = [];
+        foreach ($arr as $k => $v)
+        {
+            if (in_array($k, $keys))
+            {
+                $new_arr[$k] = $v;
+            }
+        }
+        return $new_arr;
     }
 }

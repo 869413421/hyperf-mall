@@ -17,8 +17,7 @@ class ElasticSearch
     {
         $client_builder = container()->get(ClientBuilderFactory::class);
         $builder = $client_builder->create();
-        $host = explode(',', config('databases.elasticsearch.hosts'));
-
+        $host = config('databases.elasticsearch.hosts');
         $this->es_client = $builder->setHosts($host)->build();
     }
 

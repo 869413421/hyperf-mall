@@ -14,12 +14,20 @@ namespace App\Controller;
 
 use App\Constants\ResponseCode;
 use App\Facade\Redis;
+use App\Utils\ElasticSearch;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 
 
 class IndexController extends AbstractController
 {
+    /**
+     * @Inject()
+     * @var ElasticSearch
+     */
+    private $es;
+
     public function index(RequestInterface $request, ResponseInterface $response)
     {
         $user = $this->request->input('user', 'Hyperf');
@@ -29,6 +37,9 @@ class IndexController extends AbstractController
 
     public function test()
     {
+        $host = config('databases.elasticsearch.hosts');
+        var_dump($host);
+        $this->es->indexExistsEs('products');
         $key = $this->request->input('key');
         $value = $this->request->input('value');
         return $this->response->json([$key => $value]);
