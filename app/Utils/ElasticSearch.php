@@ -107,7 +107,6 @@ class ElasticSearch
         return $this->es_client->exists($params);
     }
 
-
     /**
      * 创建文档
      **/
@@ -125,6 +124,15 @@ class ElasticSearch
         return $this->es_client->index($index_data);
     }
 
+    /**
+     * 批量操作
+     * @param $params
+     * @return array
+     */
+    public function bulk($params)
+    {
+        return $this->es_client->bulk($params);
+    }
 
     /**
      * 修改文档
@@ -139,13 +147,12 @@ class ElasticSearch
             'body' => [
                 'doc' => $data,
             ],
-
         ];
         return $this->es_client->update($update_data);
     }
 
     /**
-     * 修改文档
+     * 删除文档
      **/
     public function deleteEs($params)
     {
@@ -221,7 +228,6 @@ class ElasticSearch
 
     }
 
-
     /**
      * 查询数据
      * 请求参数实例：
@@ -231,7 +237,6 @@ class ElasticSearch
      * $es_params['source_field']: es 查询需要获取的字段
      * $es_params['field_alias']:  查询字段别名 例如 ['a'=>['b','c','d']] 查询时候拼接 a.b=* a.c=*
      */
-
     public function new_searchEs($es_params)
     {
         extract($es_params);

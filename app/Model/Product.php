@@ -4,7 +4,10 @@ declare (strict_types=1);
 
 namespace App\Model;
 
+use App\Services\ProductQueueService;
 use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\Database\Model\Events\Saved;
+use Hyperf\Database\Model\Events\Saving;
 use Hyperf\DbConnection\Db;
 
 /**
@@ -106,6 +109,12 @@ class Product extends ModelBase implements ModelInterface
     public function deleted(Deleted $event)
     {
         Db::table('product_skus')->where('product_id', $this->id)->delete();
+    }
+
+    public function saved(Saved $event)
+    {
+        $productQueueService = container()->get(ProductQueueService::class);
+        $productQueueService->pushSyncProductJob($this, 0);
     }
 
     public function toESArray()
