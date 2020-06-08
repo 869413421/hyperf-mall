@@ -45,7 +45,7 @@ class Product extends ModelBase implements ModelInterface
      * @var array
      */
     protected $fillable = [
-        'title', 'long_title', 'description', 'image', 'on_sale', 'price'
+        'title', 'long_title', 'description', 'image', 'on_sale', 'price','category_id'
     ];
     /**
      * The attributes that should be cast to native types.

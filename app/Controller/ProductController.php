@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Exception\ServiceException;
+use App\Model\Category;
 use App\Model\Product;
 use App\Model\User;
 use App\Request\FavorRequest;
@@ -113,12 +114,58 @@ class ProductController extends BaseController
             }
         }
 
+        if ($this->request->input('category_id') && $category = Category::find($this->request->input('category_id')))
+        {
+            if ($category->is_directory)
+            {
+                // 如果是一个父类目，则使用 category_path 来筛选
+                $params['body']['query']['bool']['filter'][] = [
+                    'prefix' => ['category_path' => $category->path . $category->id . '-'],
+                ];
+            }
+            else
+            {
+                // 否则直接通过 category_id 筛选
+                $params['body']['query']['bool']['filter'][] = ['term' => ['category_id' => $category->id]];
+            }
+        }
+
+        //关键词搜索
+        if ($search = $this->request->input('search', ''))
+        {
+            // 将搜索词根据空格拆分成数组，并过滤掉空项
+            $keywords = array_filter(explode(' ', $search));
+
+            $params['body']['query']['bool']['must'] = [];
+            // 遍历搜索词数组，分别添加到 must 查询中
+            foreach ($keywords as $keyword)
+            {
+                $params['body']['query']['bool']['must'][] = [
+                    'multi_match' => [
+                        'query' => $keyword,
+                        'fields' => [
+                            'title^2',
+                            'long_title^2',
+                            'category^2',
+                            'description',
+                            'skus.title^2',
+                            'skus.description',
+                            'properties.value',
+                        ],
+                    ],
+                ];
+            }
+        }
+
         $result = $this->es->es_client->search($params);
 
         // 通过 collect 函数将返回结果转为集合，并通过集合的 pluck 方法取到返回的商品 ID 数组
         $productIds = collect($result['hits']['hits'])->pluck('_id')->all();
         // 通过 whereIn 方法从数据库中读取商品数据
         $products = Product::query()
+            ->with('skus')
+            ->with('properties')
+            ->with('category')
             ->whereIn('id', $productIds)
             // orderByRaw 可以让我们用原生的 SQL 来给查询结果排序
             ->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $productIds)))
@@ -143,6 +190,16 @@ class ProductController extends BaseController
             throw new ServiceException(403, '商品不存在');
         }
         $product->update($request->validated());
+        $properties = $request->validated()['properties'] ?? null;
+        if ($properties)
+        {
+            $product->properties()->delete();
+            foreach ($properties as $property)
+            {
+                $productProperty = $product->properties()->make($property);
+                $productProperty->save();
+            }
+        }
         return $this->response->json(responseSuccess(200, '更新成功'));
     }
 

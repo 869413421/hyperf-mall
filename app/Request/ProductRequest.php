@@ -37,12 +37,16 @@ class ProductRequest extends FormRequest
                     'description' => 'required|string|between:2,1000',
                     'image' => 'required|url',
                     'on_sale' => 'required|integer|boolean',
+                    'category_id' => 'nullable|exists:categories,id',
                     'price' => 'required|numeric',
                     'items' => 'required|array',
                     'items.*.title' => 'required|string|between:2,50',
                     'items.*.description' => 'required|string|between:2,1000',
                     'items.*.price' => 'required|numeric',
                     'items.*.stock' => 'required|integer|min:0',
+                    'properties' => 'required|array',
+                    'properties.*.name' => 'required|string|between:2,10',
+                    'properties.*.value' => 'required|string|between:2,20',
                 ];
                 return $rules;
                 break;
@@ -53,6 +57,10 @@ class ProductRequest extends FormRequest
                     'image' => 'nullable|url',
                     'on_sale' => 'nullable|integer|boolean',
                     'price' => 'nullable|numeric',
+                    'category_id' => 'nullable|exists:categories,id',
+                    'properties' => 'nullable|array',
+                    'properties.*.name' => 'nullable|string|between:2,10',
+                    'properties.*.value' => 'nullable|string|between:2,20',
                 ];
                 return $rules;
                 break;

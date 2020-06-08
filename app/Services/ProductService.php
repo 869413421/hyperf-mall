@@ -19,17 +19,26 @@ class ProductService
     {
         return Db::transaction(function () use ($productData)
         {
+            $category_id = $productData['category_id'] ?? null;
             $productAttributes = [
                 'title' => $productData['title'],
                 'description' => $productData['description'],
                 'image' => $productData['image'],
                 'on_sale' => $productData['on_sale'],
                 'price' => $productData['price'],
+                'category_id' => $category_id
             ];
+
 
             $product = new Product($productAttributes);
             $product->save();
 
+            $properties = $productData['properties'] ?? null;
+            foreach ($properties as $property)
+            {
+                $productProperty = $product->properties()->make($property);
+                $productProperty->save();
+            }
 
             foreach ($productData['items'] as $sku)
             {
