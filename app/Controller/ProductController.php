@@ -10,7 +10,9 @@ use App\Model\User;
 use App\Request\FavorRequest;
 use App\Request\ProductRequest;
 use App\Services\ProductService;
+use App\Utils\ElasticSearch;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Paginator\LengthAwarePaginator;
 
 class ProductController extends BaseController
 {
@@ -20,6 +22,12 @@ class ProductController extends BaseController
      */
     private $productService;
 
+    /**
+     * @Inject()
+     * @var ElasticSearch
+     */
+    private $es;
+
     public function index(ProductRequest $request)
     {
         $search = $request->input('search');
@@ -27,10 +35,6 @@ class ProductController extends BaseController
         $field = $request->input('field');
         $builder = Product::query();
 
-        if ($this->request->decodedPath() !== 'center/product')
-        {
-            $builder->where('on_sale', true);
-        }
         if ($search)
         {
             $like = "%$search%";
@@ -69,6 +73,60 @@ class ProductController extends BaseController
             throw new ServiceException(422, '商品没上架');
         }
         return $this->response->json(responseSuccess(200, '', $product));
+    }
+
+    public function productList()
+    {
+        $page = $this->request->input('page', 1);
+        $perPage = $this->getPageSize();
+
+        // 构建查询
+        $params = [
+            'index' => 'products',
+            'type' => '_doc',
+            'body' => [
+                'from' => ($page - 1) * $perPage, // 通过当前页数与每页数量计算偏移值
+                'size' => $perPage,
+                'query' => [
+                    'bool' => [
+                        'filter' => [
+                            ['term' => ['on_sale' => true]],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        // 是否有提交 order 参数，如果有就赋值给 $order 变量
+        // order 参数用来控制商品的排序规则
+        if ($order = $this->request->input('order', ''))
+        {
+            // 是否是以 _asc 或者 _desc 结尾
+            if (preg_match('/^(.+)_(asc|desc)$/', $order, $m))
+            {
+                // 如果字符串的开头是这 3 个字符串之一，说明是一个合法的排序值
+                if (in_array($m[1], ['price', 'sold_count', 'rating']))
+                {
+                    // 根据传入的排序值来构造排序参数
+                    $params['body']['sort'] = [[$m[1] => $m[2]]];
+                }
+            }
+        }
+
+        $result = $this->es->es_client->search($params);
+
+        // 通过 collect 函数将返回结果转为集合，并通过集合的 pluck 方法取到返回的商品 ID 数组
+        $productIds = collect($result['hits']['hits'])->pluck('_id')->all();
+        // 通过 whereIn 方法从数据库中读取商品数据
+        $products = Product::query()
+            ->whereIn('id', $productIds)
+            // orderByRaw 可以让我们用原生的 SQL 来给查询结果排序
+            ->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $productIds)))
+            ->get();
+
+        $data = $this->getPaginateData(new LengthAwarePaginator($products, (int)$result['hits']['total'], $perPage, $page));
+
+        return $this->response->json(responseSuccess(200, '', $data));
     }
 
     public function store(ProductRequest $request)

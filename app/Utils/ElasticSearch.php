@@ -8,7 +8,7 @@ use Hyperf\Elasticsearch\ClientBuilderFactory;
 
 class ElasticSearch
 {
-    protected $es_client;
+    public $es_client;
 
     /**
      * 实例化客户端对象
@@ -192,9 +192,7 @@ class ElasticSearch
 
         if (!in_array($order_type, ['asc', 'desc']))
         {
-
             $order_type = 'desc';
-
         }
 
         //初始化查询body

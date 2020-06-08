@@ -18,6 +18,7 @@ use App\Utils\ElasticSearch;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Utils\Collection;
 
 
 class IndexController extends AbstractController
@@ -37,9 +38,7 @@ class IndexController extends AbstractController
 
     public function test()
     {
-        $host = config('databases.elasticsearch.hosts');
-        var_dump($host);
-        $this->es->indexExistsEs('products');
+        $this->es->searchEs();
         $key = $this->request->input('key');
         $value = $this->request->input('value');
         return $this->response->json([$key => $value]);

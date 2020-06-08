@@ -47,7 +47,7 @@ Router::addGroup('', function ()
     Router::post('/sms', 'App\Controller\SmsController@store');
 
     //商品列表
-    Router::get('/product', 'App\Controller\ProductController@index');
+    Router::get('/product', 'App\Controller\ProductController@productList');
     //商品详情
     Router::get('/product/{id}', 'App\Controller\ProductController@show');
 

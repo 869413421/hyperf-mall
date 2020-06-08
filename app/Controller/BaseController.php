@@ -29,6 +29,6 @@ class BaseController extends AbstractController
 
     public function getPageSize()
     {
-        return $this->request->input('pageSize') == null ? null : (int)$this->request->input('pageSize');
+        return $this->request->input('pageSize') == null ? 10 : (int)$this->request->input('pageSize');
     }
 }
