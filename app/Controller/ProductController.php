@@ -157,22 +157,62 @@ class ProductController extends BaseController
             }
         }
 
+        if ($search || isset($category))
+        {
+            //分面聚合查询
+            $params['body']['aggs'] = [
+                'properties' => [
+                    'nested' => [
+                        'path' => 'properties'
+                    ],
+                    'aggs' => [
+                        'properties_name' => [
+                            'terms' => [
+                                'field' => 'properties.name',
+                            ],
+                            'aggs' => [
+                                'properties_value' => [
+                                    'terms' => [
+                                        'field' => 'properties.value'
+                                    ]
+                                ]
+                            ],
+                        ],
+                    ],
+                ]
+            ];
+        }
+
         $result = $this->es->es_client->search($params);
+        var_dump($result);
+
+        $properties = [];
+        // 如果返回结果里有 aggregations 字段，说明做了分面搜索
+        if (isset($result['aggregations']))
+        {
+            // 使用 collect 函数将返回值转为集合
+            $properties = collect($result['aggregations']['properties']['properties_name']['buckets'])
+                ->map(function ($bucket)
+                {
+                    // 通过 map 方法取出我们需要的字段
+                    return [
+                        'key' => $bucket['key'],
+                        'values' => collect($bucket['properties_value']['buckets'])->pluck('key')->all(),
+                    ];
+                });
+        }
 
         // 通过 collect 函数将返回结果转为集合，并通过集合的 pluck 方法取到返回的商品 ID 数组
         $productIds = collect($result['hits']['hits'])->pluck('_id')->all();
         // 通过 whereIn 方法从数据库中读取商品数据
         $products = Product::query()
-            ->with('skus')
-            ->with('properties')
-            ->with('category')
             ->whereIn('id', $productIds)
             // orderByRaw 可以让我们用原生的 SQL 来给查询结果排序
             ->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $productIds)))
             ->get();
 
-        $data = $this->getPaginateData(new LengthAwarePaginator($products, (int)$result['hits']['total'], $perPage, $page));
-
+        $data = $this->getPaginateData(new LengthAwarePaginator($products, (int)$result['hits']['total']['value'], $perPage, $page));
+        $data['properties'] = $properties;
         return $this->response->json(responseSuccess(200, '', $data));
     }
 
