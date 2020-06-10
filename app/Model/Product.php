@@ -147,7 +147,9 @@ class Product extends ModelBase implements ModelInterface
         // 只取出需要的商品属性字段
         $arr['properties'] = $this->properties->map(function (ProductProperty $property)
         {
-            return array_only($property->toArray(), ['name', 'value']);
+            return array_merge(array_only($property->toArray(), ['name', 'value']), [
+                'search_value' => $property->name.':'.$property->value,
+            ]);
         });
 
         return $arr;

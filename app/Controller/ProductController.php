@@ -183,8 +183,34 @@ class ProductController extends BaseController
             ];
         }
 
+        $propertyFilters = [];
+        // 从用户请求参数获取 filters
+        if ($filterString = $this->request->input('filters'))
+        {
+            // 将获取到的字符串用符号 | 拆分成数组
+            $filterArray = explode('|', $filterString);
+            foreach ($filterArray as $filter)
+            {
+                // 将字符串用符号 : 拆分成两部分并且分别赋值给 $name 和 $value 两个变量
+                list($name, $value) = explode(':', $filter);
+
+                $propertyFilters[$name] = $value;
+
+                // 添加到 filter 类型中
+                $params['body']['query']['bool']['filter'][] = [
+                    // 由于我们要筛选的是 nested 类型下的属性，因此需要用 nested 查询
+                    'nested' => [
+                        // 指明 nested 字段
+                        'path' => 'properties',
+                        'query' => [
+                            ['term' => ['properties.search_value' => $filter]],
+                        ],
+                    ],
+                ];
+            }
+        }
+
         $result = $this->es->es_client->search($params);
-        var_dump($result);
 
         $properties = [];
         // 如果返回结果里有 aggregations 字段，说明做了分面搜索
@@ -199,6 +225,10 @@ class ProductController extends BaseController
                         'key' => $bucket['key'],
                         'values' => collect($bucket['properties_value']['buckets'])->pluck('key')->all(),
                     ];
+                })->filter(function ($property) use ($propertyFilters)
+                {
+                    // 过滤掉只剩下一个值 或者 已经在筛选条件里的属性
+                    return count($property['values']) > 1 && !isset($propertyFilters[$property['key']]);
                 });
         }
 
