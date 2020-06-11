@@ -8,6 +8,9 @@ use Hyperf\Elasticsearch\ClientBuilderFactory;
 
 class ElasticSearch
 {
+    /**
+     * @var \Elasticsearch\Client
+     */
     public $es_client;
 
     /**
