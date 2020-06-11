@@ -154,4 +154,9 @@ class Product extends ModelBase implements ModelInterface
 
         return $arr;
     }
+
+    public function scopeByIds($query, $ids)
+    {
+        return $query->whereIn('id', $ids)->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $ids)));
+    }
 }

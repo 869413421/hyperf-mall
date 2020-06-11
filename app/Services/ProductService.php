@@ -11,6 +11,8 @@ namespace App\Services;
 use App\Model\CrowdfundingProduct;
 use App\Model\Product;
 use App\Model\ProductSku;
+use App\SearchBuilders\ProductSearchBuilder;
+use App\Utils\ElasticSearch;
 use Hyperf\DbConnection\Db;
 
 class ProductService
@@ -61,5 +63,32 @@ class ProductService
             return $product;
         });
 
+    }
+
+    /**
+     * 获取相似商品
+     * @param Product $product
+     * @param int $pageSize
+     * @return array
+     */
+    public function getSimilarProductIds(Product $product, int $pageSize)
+    {
+        $es = container()->get(ElasticSearch::class);
+        // 如果商品没有商品属性，则直接返回空
+        if (count($product->properties) === 0)
+        {
+            return [];
+        }
+        $builder = (new ProductSearchBuilder())->onSale()->paginate(1, $pageSize);
+        foreach ($product->properties as $property)
+        {
+            $builder->propertyFilter($property->name . ':' . $property->value, 'should');
+        }
+        $builder->minShouldMatch(ceil(count($product->properties) / 2));
+        $params = $builder->getParams();
+        $params['body']['query']['bool']['must_not'] = [['term' => ['_id' => $product->id]]];
+        $result = $es->es_client->search($params);
+
+        return collect($result['hits']['hits'])->pluck('_id')->all();
     }
 }

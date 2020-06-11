@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Exception\ServiceException;
 use App\Model\Category;
 use App\Model\Product;
+use App\Model\ProductProperty;
 use App\Model\User;
 use App\Request\FavorRequest;
 use App\Request\ProductRequest;
@@ -74,7 +75,18 @@ class ProductController extends BaseController
         {
             throw new ServiceException(422, '商品没上架');
         }
-        return $this->response->json(responseSuccess(200, '', $product));
+
+        //获取推荐商品
+        $similarProductIds = $this->productService->getSimilarProductIds($product, 4);
+        // 根据 Elasticsearch 搜索出来的商品 ID 从数据库中读取商品数据
+        $similarProducts = Product::query()->byIds($similarProductIds)->get();
+
+        $data = [
+            'product' => $product,
+            'similarProducts' => $similarProducts
+        ];
+
+        return $this->response->json(responseSuccess(200, '', $data));
     }
 
     public function productList()
@@ -134,7 +146,7 @@ class ProductController extends BaseController
                 $builder->propertyFilter($name . ':' . $value);
             }
         }
-        var_dump($builder->getParams());
+
         $result = $this->es->es_client->search($builder->getParams());
 
         $properties = [];
@@ -160,11 +172,7 @@ class ProductController extends BaseController
         // 通过 collect 函数将返回结果转为集合，并通过集合的 pluck 方法取到返回的商品 ID 数组
         $productIds = collect($result['hits']['hits'])->pluck('_id')->all();
         // 通过 whereIn 方法从数据库中读取商品数据
-        $products = Product::query()
-            ->whereIn('id', $productIds)
-            // orderByRaw 可以让我们用原生的 SQL 来给查询结果排序
-            ->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $productIds)))
-            ->get();
+        $products = Product::query()->byIds($productIds)->get();
 
         $data = $this->getPaginateData(new LengthAwarePaginator($products, (int)$result['hits']['total']['value'], $perPage, $page));
         $data['properties'] = $properties;

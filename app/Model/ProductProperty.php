@@ -5,6 +5,12 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
+ * @property int $id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $name
+ * @property string $value
+ * @property int $product_id
  */
 class ProductProperty extends ModelBase implements ModelInterface
 {
