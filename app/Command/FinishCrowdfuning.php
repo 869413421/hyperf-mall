@@ -79,6 +79,7 @@ class FinishCrowdfuning extends HyperfCommand
                 $query->where('product_id', $crowdfunding->product_id);
             })
             ->get();
+        //因为使用第三方的组件不支持协程会阻塞，所以使用协程请求退款接口
         $parallel = new Parallel();
         foreach ($orderList as $order)
         {
