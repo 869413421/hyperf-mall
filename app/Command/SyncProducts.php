@@ -9,6 +9,7 @@ use App\Utils\ElasticSearch;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * 同步商品信息到ElasticSearch
@@ -34,18 +35,27 @@ class SyncProducts extends HyperfCommand
         $this->setDescription('同步商品信息到elasticSearch');
     }
 
+    protected function getArguments()
+    {
+        return [
+            ['index', InputArgument::OPTIONAL, '索引名称']
+        ];
+    }
+
     public function handle()
     {
+        // 从 $input 获取 name 参数
+        $index = $this->input->getArgument('index') ?? 'products';
+        $this->info('准备同步索引:' . $index);
         $es = $this->container->get(ElasticSearch::class);
         Product::query()
             // 预加载 SKU 和 商品属性数据，避免 N + 1 问题
             ->with(['skus', 'properties'])
             // 使用 chunkById 避免一次性加载过多数据
-            ->chunkById(100, function ($products) use ($es)
+            ->chunkById(100, function ($products) use ($es, $index)
             {
                 $this->info(sprintf('正在同步 ID 范围为 %s 至 %s 的商品', $products->first()->id, $products->last()->id));
 
-                $index = 'products';
                 $type = '_doc';
 
                 $params = [

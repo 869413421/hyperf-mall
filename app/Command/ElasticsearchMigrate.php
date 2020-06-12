@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Utils\ElasticSearch;
+use App\Utils\ProjectIndex;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;
@@ -40,9 +41,10 @@ class ElasticsearchMigrate extends HyperfCommand
 
     public function handle()
     {
+
         $this->esClient = $this->container->get(ElasticSearch::class)->es_client;
         // 索引类数组，先留空
-        $indices = [];
+        $indices = [ProjectIndex::class];;
         // 遍历索引类数组
         foreach ($indices as $indexClass)
         {
@@ -55,7 +57,7 @@ class ElasticsearchMigrate extends HyperfCommand
                 $this->info('索引不存在，准备创建');
                 $this->createIndex($aliasName, $indexClass);
                 $this->info('创建成功，准备初始化数据');
-                $indexClass::rebuild($aliasName);
+                $this->rebuild($aliasName);
                 $this->info('操作成功');
                 continue;
             }
@@ -84,10 +86,7 @@ class ElasticsearchMigrate extends HyperfCommand
                 // 调用索引类的 getSettings() 方法获取索引设置
                 'settings' => $indexClass::getSettings(),
                 'mappings' => [
-                    '_doc' => [
-                        // 调用索引类的 getProperties() 方法获取索引字段
-                        'properties' => $indexClass::getProperties(),
-                    ],
+                    'properties' => $indexClass::getProperties(),
                 ],
                 'aliases' => [
                     // 同时创建别名
@@ -109,11 +108,8 @@ class ElasticsearchMigrate extends HyperfCommand
         // 更新索引字段
         $this->esClient->indices()->putMapping([
             'index' => $aliasName,
-            'type' => '_doc',
             'body' => [
-                '_doc' => [
-                    'properties' => $indexClass::getProperties(),
-                ],
+                'properties' => $indexClass::getProperties(),
             ],
         ]);
         // 重新打开索引
@@ -123,7 +119,7 @@ class ElasticsearchMigrate extends HyperfCommand
     protected function reCreateIndex($aliasName, $indexClass)
     {
         // 获取索引信息，返回结构的 key 为索引名称，value 为别名
-        $indexInfo =  $this->esClient->indices()->getAliases(['index' => $aliasName]);
+        $indexInfo = $this->esClient->indices()->getAliases(['index' => $aliasName]);
         // 取出第一个 key 即为索引名称
         $indexName = array_keys($indexInfo)[0];
         // 用正则判断索引名称是否以 _数字 结尾
@@ -141,18 +137,21 @@ class ElasticsearchMigrate extends HyperfCommand
             'body' => [
                 'settings' => $indexClass::getSettings(),
                 'mappings' => [
-                    '_doc' => [
-                        'properties' => $indexClass::getProperties(),
-                    ],
+                    'properties' => $indexClass::getProperties(),
                 ],
             ],
         ]);
         $this->info('创建成功，准备重建数据');
-        $indexClass::rebuild($newIndexName);
+        $this->rebuild($newIndexName);
         $this->info('重建成功，准备修改别名');
         $this->esClient->indices()->putAlias(['index' => $newIndexName, 'name' => $aliasName]);
         $this->info('修改成功，准备删除旧索引');
         $this->esClient->indices()->delete(['index' => $indexName]);
         $this->info('删除成功');
+    }
+
+    public function rebuild($indexName)
+    {
+        $this->call('es:sync-products', [$indexName]);
     }
 }
