@@ -125,6 +125,66 @@ class OrderService
         return $order;
     }
 
+    /**
+     * 秒杀
+     * @param User $user
+     * @param UserAddress $address
+     * @param ProductSku $sku
+     * @return mixed
+     */
+    public function seckill(User $user, $orderData)
+    {
+        $order = DB::transaction(function () use ($user, $orderData)
+        {
+            // 更新此地址的最后使用时间
+            $address = UserAddress::getFirstById($orderData['address_id']);
+            $address->update(['last_used_at' => Carbon::now()]);
+
+            $productSku = ProductSku::getFirstById($orderData['sku_id']);
+            // 创建一个订单
+            $order = new Order([
+                'address' => [ // 将地址信息放入订单中
+                    'address' => $address->full_address,
+                    'zip' => $address->zip,
+                    'contact_name' => $address->contact_name,
+                    'contact_phone' => $address->contact_phone,
+                ],
+                'remark' => '',
+                'total_amount' => $productSku->price,
+                'type' => Order::TYPE_SECKILL,
+            ]);
+            // 订单关联到当前用户
+            $order->user()->associate($user);
+            // 写入数据库
+            $order->save();
+            // 创建一个新的订单项并与 SKU 关联
+            $item = $order->items()->make([
+                'amount' => 1, // 秒杀商品只能一份
+                'price' => $productSku->price,
+            ]);
+            $item->product()->associate($productSku->product_id);
+            $item->productSku()->associate($productSku);
+            $item->save();
+            // 扣减对应 SKU 库存
+            if ($productSku->decreaseStock(1) <= 0)
+            {
+                throw new ServiceException(403, '该商品库存不足');
+            }
+
+            return $order;
+        });
+        // 秒杀订单的自动关闭时间与普通订单不同
+        $this->orderQueueService->pushCloseOrderJod($order, 600);
+
+        return $order;
+    }
+
+    /**
+     * 众筹下单
+     * @param User $user
+     * @param $orderData
+     * @return Order
+     */
     public function crowdfunding(User $user, $orderData): Order
     {
         $order = Db::transaction(function () use ($user, $orderData)

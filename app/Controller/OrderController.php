@@ -13,6 +13,7 @@ use App\Request\CrowdfundingRequest;
 use App\Request\HandleRefundRequest;
 use App\Request\OrderRequest;
 use App\Request\ReviewRequest;
+use App\Request\SeckillOrderRequest;
 use App\Request\SendOutGoodRequest;
 use App\Services\OrderService;
 use Hyperf\Di\Annotation\Inject;
@@ -57,6 +58,12 @@ class OrderController extends BaseController
     public function crowdfunding(CrowdfundingOrderRequest $request)
     {
         $order = $this->service->crowdfunding($request->getAttribute('user'), $request->validated());
+        return $this->response->json(responseSuccess(201, '', $order));
+    }
+
+    public function seckill(SeckillOrderRequest $request)
+    {
+        $order = $this->service->seckill($request->getAttribute('user'), $request->validated());
         return $this->response->json(responseSuccess(201, '', $order));
     }
 

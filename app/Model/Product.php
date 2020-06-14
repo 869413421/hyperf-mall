@@ -28,9 +28,11 @@ class Product extends ModelBase implements ModelInterface
 {
     const TYPE_NORMAL = 'normal';
     const TYPE_CROWDFUNDING = 'crowdfunding';
+    const TYPE_SECKILL = 'seckill';
     public static $typeMap = [
         self::TYPE_NORMAL => '普通商品',
         self::TYPE_CROWDFUNDING => '众筹商品',
+        self::TYPE_SECKILL => '秒杀商品',
     ];
 
     /**
@@ -70,6 +72,15 @@ class Product extends ModelBase implements ModelInterface
     public function crowdfunding()
     {
         return $this->hasOne(CrowdfundingProduct::class);
+    }
+
+    /**
+     * 秒杀商品
+     * @return \Hyperf\Database\Model\Relations\HasOne
+     */
+    public function seckill()
+    {
+        return $this->hasOne(SeckillProduct::class);
     }
 
     /**

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Exception\ServiceException;
-use App\Model\CrowdfundingProduct;
 use App\Model\Product;
-use App\Request\CrowdfundingRequest;
+use App\Model\SeckillProduct;
+use App\Request\SeckillProductsRequest;
 use App\Services\ProductService;
 use Hyperf\Di\Annotation\Inject;
 
-class CrowdfundingController extends BaseController
+class SeckillProductsController extends BaseController
 {
     /**
      * @Inject()
@@ -21,40 +21,40 @@ class CrowdfundingController extends BaseController
 
     public function index()
     {
-        $query = Product::query()->with(['crowdfunding', 'skus'])->where('type', Product::TYPE_CROWDFUNDING);
+        $query = Product::query()->with(['seckill', 'skus'])->where('type', Product::TYPE_SECKILL);
         $data = $this->getPaginateData($query->paginate($this->getPageSize()));
         return $this->response->json(responseSuccess(200, '', $data));
     }
 
-    public function store(CrowdfundingRequest $request)
+    public function store(SeckillProductsRequest $request)
     {
         $productData = $request->validated();
         $product = $this->productService->createProduct($productData);
         return $this->response->json(responseSuccess(201, '', $product));
     }
 
-    public function update(CrowdfundingRequest $request)
+    public function update(SeckillProductsRequest $request)
     {
         $product = Product::getFirstById($request->route('id'));
-        if (!$product || $product->type != Product::TYPE_CROWDFUNDING)
+        if (!$product || $product->type != Product::TYPE_SECKILL)
         {
             throw new ServiceException(403, '商品不存在');
         }
         $data = $request->validated();
         $product->update($data);
-        $product->crowdfunding->fill($data);
-        $product->crowdfunding->save();
+        $product->seckill->fill($data);
+        $product->seckill->save();
         return $this->response->json(responseSuccess(200, '更新成功'));
     }
 
     public function delete()
     {
-        $crowdfunding = CrowdfundingProduct::getFirstById($this->request->route('id'));
-        if (!$crowdfunding)
+        $seckillProduct = SeckillProduct::getFirstById($this->request->route('id'));
+        if (!$seckillProduct)
         {
             throw new ServiceException(403, '商品不存在');
         }
-        $crowdfunding->delete();
+        $seckillProduct->delete();
         return $this->response->json(responseSuccess(200, '删除成功'));
     }
 }

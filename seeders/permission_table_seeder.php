@@ -402,6 +402,45 @@ class PermissionTableSeeder extends Seeder
                 'display_name' => '众筹商品删除',
                 'guard_name' => 'admin',
                 'sort' => 0
+            ] ,
+            [
+                'id' => 44,
+                'parent_id' => 0,
+                'url' => '/center/seckill/get',
+                'name' => '秒杀商品管理',
+                'display_name' => '秒杀商品管理',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 45,
+                'parent_id' => 44,
+                'url' => '/center/seckill/post',
+                'name' => '秒杀商品添加',
+                'display_name' => '秒杀商品添加',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 46,
+                'parent_id' => 44,
+                'url' => '/center/seckill/{id}/patch',
+                'name' => '秒杀商品更新',
+                'display_name' => '秒杀商品更新',
+                'guard_name' => 'admin',
+                'sort' => 0
+            ]
+            ,
+            [
+                'id' => 47,
+                'parent_id' => 44,
+                'url' => '/center/seckill/{id}/delete',
+                'name' => '秒杀商品删除',
+                'display_name' => '秒杀商品删除',
+                'guard_name' => 'admin',
+                'sort' => 0
             ]
         ]);
         $role = \App\Model\Role::create([

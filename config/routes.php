@@ -114,6 +114,8 @@ Router::addGroup('/me', function ()
     Router::post('/order', 'App\Controller\OrderController@store');
     //创建众筹订单
     Router::post('/order/crowdfunding', 'App\Controller\OrderController@crowdfunding');
+    //创建秒杀订单
+    Router::post('/order/seckill', 'App\Controller\OrderController@seckill');
     //支付支付宝订单
     Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
     //支付微信订单
@@ -267,6 +269,19 @@ Router::addGroup('/center', function ()
         Router::patch('/{id}', 'App\Controller\CrowdfundingController@update');
         //删除众筹商品
         Router::delete('/{id}', 'App\Controller\CrowdfundingController@delete');
+    });
+
+    //SeckillProducts
+    Router::addGroup('/seckill', function ()
+    {
+        //秒杀商品列表
+        Router::get('', 'App\Controller\SeckillProductsController@index');
+        //创建秒杀商品
+        Router::post('', 'App\Controller\SeckillProductsController@store');
+        //更新秒杀商品
+        Router::patch('/{id}', 'App\Controller\SeckillProductsController@update');
+        //删除秒杀商品
+        Router::delete('/{id}', 'App\Controller\SeckillProductsController@delete');
     });
 
 }, ['middleware' => $adminMiddleWare]);

@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Model\CrowdfundingProduct;
 use App\Model\Product;
 use App\Model\ProductSku;
+use App\Model\SeckillProduct;
 use App\SearchBuilders\ProductSearchBuilder;
 use App\Utils\ElasticSearch;
 use Hyperf\DbConnection\Db;
@@ -50,6 +51,7 @@ class ProductService
                 $productSku->save();
             }
 
+            //众筹商品
             if (key_exists('target_amount', $productData))
             {
                 $crowdfunding = new CrowdfundingProduct();
@@ -58,6 +60,18 @@ class ProductService
                 $crowdfunding->product()->associate($product);
                 $crowdfunding->save();
                 $product->type = Product::TYPE_CROWDFUNDING;
+                $product->save();
+            }
+
+            //秒杀商品
+            if (key_exists('start_at', $productData) && key_exists('end_at', $productData))
+            {
+                $seckillProduct = new SeckillProduct();
+                $seckillProduct->start_at = $productData['start_at'];
+                $seckillProduct->end_at = $productData['start_at'];
+                $seckillProduct->product()->associate($product);
+                $seckillProduct->save();
+                $product->type = Product::TYPE_SECKILL;
                 $product->save();
             }
             return $product;
