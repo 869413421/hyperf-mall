@@ -1,10 +1,12 @@
 <?php
 
+use App\Constants\ResponseCode;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Server\ServerFactory;
 use Hyperf\Utils\ApplicationContext;
+use Phper666\JwtAuth\Exception\TokenValidException;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoole\Websocket\Frame;
 use Swoole\WebSocket\Server as WebSocketServer;
@@ -136,6 +138,12 @@ if (!function_exists('authUser'))
      */
     function authUser()
     {
+        $request = container()->get(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        $token = $request->getHeader('Authorization')[0] ?? '';
+        if (!$token)
+        {
+            throw new TokenValidException('JWT验证失败', ResponseCode::UNAUTHORIZED);
+        }
         $jwt = container()->get(Jwt::class);
         $token = $jwt->getTokenObj();
         return User::getFirstById($token->getClaim('id'));

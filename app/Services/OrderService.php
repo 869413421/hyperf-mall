@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exception\ServiceException;
+use App\Facade\Redis;
 use App\Model\CrowdfundingProduct;
 use App\Model\Order;
 use App\Model\OrderItem;
@@ -167,11 +168,11 @@ class OrderService
             {
                 throw new ServiceException(403, '该商品库存不足');
             }
-
+            Redis::decr('seckill_sku_'.$productSku->id);
             return $order;
         });
         // 秒杀订单的自动关闭时间与普通订单不同
-        $this->orderQueueService->pushCloseOrderJod($order, 600);
+        $this->orderQueueService->pushCloseOrderJod($order, 100);
 
         return $order;
     }

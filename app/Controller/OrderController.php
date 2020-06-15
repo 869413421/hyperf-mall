@@ -63,7 +63,7 @@ class OrderController extends BaseController
 
     public function seckill(SeckillOrderRequest $request)
     {
-        $order = $this->service->seckill($request->getAttribute('user'), $request->validated());
+        $order = $this->service->seckill(authUser(), $request->validated());
         return $this->response->json(responseSuccess(201, '', $order));
     }
 

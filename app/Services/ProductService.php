@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Event\SavedSeckillEvent;
 use App\Model\CrowdfundingProduct;
 use App\Model\Product;
 use App\Model\ProductSku;
@@ -15,9 +16,17 @@ use App\Model\SeckillProduct;
 use App\SearchBuilders\ProductSearchBuilder;
 use App\Utils\ElasticSearch;
 use Hyperf\DbConnection\Db;
+use Hyperf\Di\Annotation\Inject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ProductService
 {
+    /**
+     * @Inject()
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     public function createProduct($productData): Product
     {
         return Db::transaction(function () use ($productData)
@@ -36,7 +45,7 @@ class ProductService
             $product = new Product($productAttributes);
             $product->save();
 
-            $properties = $productData['properties'] ?? null;
+            $properties = $productData['properties'] ?? [];
             foreach ($properties as $property)
             {
                 $productProperty = $product->properties()->make($property);
@@ -68,11 +77,13 @@ class ProductService
             {
                 $seckillProduct = new SeckillProduct();
                 $seckillProduct->start_at = $productData['start_at'];
-                $seckillProduct->end_at = $productData['start_at'];
+                $seckillProduct->end_at = $productData['end_at'];
                 $seckillProduct->product()->associate($product);
                 $seckillProduct->save();
                 $product->type = Product::TYPE_SECKILL;
                 $product->save();
+                //触发秒杀商品保存事件
+                $this->eventDispatcher->dispatch(new SavedSeckillEvent($seckillProduct));
             }
             return $product;
         });

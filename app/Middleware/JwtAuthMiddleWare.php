@@ -40,7 +40,6 @@ class JwtAuthMiddleWare implements MiddlewareInterface
         try
         {
             $token = $this->jwt->getTokenObj();
-
             if (!$this->jwt->checkToken())
             {
                 throw new TokenValidException('JWT验证失败', ResponseCode::UNAUTHORIZED);

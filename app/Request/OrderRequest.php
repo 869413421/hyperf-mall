@@ -5,18 +5,12 @@ declare(strict_types=1);
 namespace App\Request;
 
 use App\Model\ProductSku;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
-use Phper666\JwtAuth\Jwt;
 
 class OrderRequest extends FormRequest
 {
-    /**
-     * @Inject()
-     * @var Jwt
-     */
-    private $jwt;
+
 
     /**
      * Determine if the user is authorized to make this request.
@@ -37,7 +31,7 @@ class OrderRequest extends FormRequest
                 return [
                     'address_id' => [
                         'required',
-                        Rule::exists('user_addresses', 'id')->where('user_id', $this->jwt->getTokenObj()->getClaim('id'))
+                        Rule::exists('user_addresses', 'id')->where('user_id', authUser()->id)
                     ],
                     'items' => 'required|array',
                     'items.*.sku_id' => [

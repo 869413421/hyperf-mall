@@ -10,8 +10,8 @@ use Hyperf\Database\Model\Events\Deleting;
 /**
  * @property int $id
  * @property int $product_id
- * @property string $start_at
- * @property string $end_at
+ * @property \Carbon\Carbon $start_at
+ * @property \Carbon\Carbon $end_at
  */
 class SeckillProduct extends ModelBase implements ModelInterface
 {
@@ -30,6 +30,10 @@ class SeckillProduct extends ModelBase implements ModelInterface
         'start_at',
         'end_at',
         'product_id'
+    ];
+
+    protected $dates = [
+        'start_at', 'end_at'
     ];
     /**
      * The attributes that should be cast to native types.

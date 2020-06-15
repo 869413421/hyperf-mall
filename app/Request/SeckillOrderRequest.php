@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Request;
 
+use App\Facade\Redis;
 use App\Model\Order;
 use App\Model\Product;
 use App\Model\ProductSku;
@@ -29,45 +30,37 @@ class SeckillOrderRequest extends FormRequest
         {
             case 'POST':
                 return [
-                    'address.province'      => 'required',
-                    'address.city'          => 'required',
-                    'address.district'      => 'required',
-                    'address.address'       => 'required',
-                    'address.zip'           => 'required',
-                    'address.contact_name'  => 'required',
+                    'address.province' => 'required',
+                    'address.city' => 'required',
+                    'address.district' => 'required',
+                    'address.address' => 'required',
+                    'address.zip' => 'required',
+                    'address.contact_name' => 'required',
                     'address.contact_phone' => 'required',
                     'sku_id' => [
                         'required',
                         function ($attribute, $value, $fail)
                         {
-                            $sku = ProductSku::getFirstById($value);
-                            if (!$sku)
+                            $stock = Redis::get('seckill_sku_' . $value);
+                            // 如果是 null 代表这个 SKU 不是秒杀商品
+                            if (is_null($stock))
                             {
-                                $fail('商品不存在');
-                                return;
+                                return $fail('该商品不存在');
+                            }
+                            // 判断库存
+                            if ($stock < 1)
+                            {
+                                return $fail('该商品已售完');
                             }
 
-                            if (!$sku->product->on_sale)
+                            $user = authUser();
+                            if (!$user)
                             {
-                                $fail('商品没上架');
-                                return;
+                                return $fail('未登录');
                             }
-
-                            if ($sku->product->type !== Product::TYPE_SECKILL)
-                            {
-                                $fail('商品不支持秒杀');
-                                return;
-                            }
-
-                            if ($sku->stock === 0)
-                            {
-                                $fail('没有库存');
-                                return;
-                            }
-
                             if ($order = Order::query()
                                 // 筛选出当前用户的订单
-                                ->where('user_id', authUser()->id)
+                                ->where('user_id', $user->id)
                                 ->whereHas('items', function ($query) use ($value)
                                 {
                                     // 筛选出包含当前 SKU 的订单

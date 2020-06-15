@@ -14,6 +14,7 @@ declare(strict_types=1);
 use Hyperf\HttpServer\Router\Router;
 use App\Middleware\JwtAuthMiddleWare;
 use App\Middleware\PermissionMiddleware;
+use App\Middleware\RandomDropSeckillMiddleware;
 
 $authMiddleWare = [
     JwtAuthMiddleWare::class,
@@ -27,6 +28,11 @@ $adminMiddleWare = [
 //游客访问路由
 Router::addGroup('', function ()
 {
+    //创建秒杀订单,减少中间件校验，提交秒杀效率
+    Router::post('/me/order/seckill', 'App\Controller\OrderController@seckill', [
+        'middleware' => [RandomDropSeckillMiddleware::class]
+    ]);
+
     Router::get('/test', 'App\Controller\IndexController@test');
     //获取分类菜单
     Router::get('/category', 'App\Controller\CategoryController@menu');
@@ -114,8 +120,6 @@ Router::addGroup('/me', function ()
     Router::post('/order', 'App\Controller\OrderController@store');
     //创建众筹订单
     Router::post('/order/crowdfunding', 'App\Controller\OrderController@crowdfunding');
-    //创建秒杀订单
-    Router::post('/order/seckill', 'App\Controller\OrderController@seckill');
     //支付支付宝订单
     Router::post('/order/{order_id}/ali/pay/web', 'App\Controller\AliPayController@store');
     //支付微信订单
