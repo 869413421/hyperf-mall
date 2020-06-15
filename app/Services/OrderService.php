@@ -136,18 +136,15 @@ class OrderService
     {
         $order = DB::transaction(function () use ($user, $orderData)
         {
-            // 更新此地址的最后使用时间
-            $address = UserAddress::getFirstById($orderData['address_id']);
-            $address->update(['last_used_at' => Carbon::now()]);
-
             $productSku = ProductSku::getFirstById($orderData['sku_id']);
             // 创建一个订单
+            $address = $orderData['address'];
             $order = new Order([
                 'address' => [ // 将地址信息放入订单中
-                    'address' => $address->full_address,
-                    'zip' => $address->zip,
-                    'contact_name' => $address->contact_name,
-                    'contact_phone' => $address->contact_phone,
+                    'address' => $address['province'] . $address['city'] . $address['district'] . $address['address'],
+                    'zip' => $address['zip'],
+                    'contact_name' => $address['contact_name'],
+                    'contact_phone' => $address['contact_phone'],
                 ],
                 'remark' => '',
                 'total_amount' => $productSku->price,

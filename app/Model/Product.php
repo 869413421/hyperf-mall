@@ -47,7 +47,7 @@ class Product extends ModelBase implements ModelInterface
      * @var array
      */
     protected $fillable = [
-        'title', 'long_title', 'description', 'image', 'on_sale', 'price','category_id'
+        'title', 'long_title', 'description', 'image', 'on_sale', 'price', 'category_id', 'type'
     ];
     /**
      * The attributes that should be cast to native types.
@@ -159,7 +159,7 @@ class Product extends ModelBase implements ModelInterface
         $arr['properties'] = $this->properties->map(function (ProductProperty $property)
         {
             return array_merge(array_only($property->toArray(), ['name', 'value']), [
-                'search_value' => $property->name.':'.$property->value,
+                'search_value' => $property->name . ':' . $property->value,
             ]);
         });
 

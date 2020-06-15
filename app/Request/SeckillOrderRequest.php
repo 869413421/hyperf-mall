@@ -7,18 +7,10 @@ namespace App\Request;
 use App\Model\Order;
 use App\Model\Product;
 use App\Model\ProductSku;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Validation\Request\FormRequest;
-use Hyperf\Validation\Rule;
-use Phper666\JwtAuth\Jwt;
 
 class SeckillOrderRequest extends FormRequest
 {
-    /**
-     * @Inject()
-     * @var Jwt
-     */
-    private $jwt;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -37,10 +29,13 @@ class SeckillOrderRequest extends FormRequest
         {
             case 'POST':
                 return [
-                    'address_id' => [
-                        'required',
-                        Rule::exists('user_addresses', 'id')->where('user_id', $this->jwt->getTokenObj()->getClaim('id'))
-                    ],
+                    'address.province'      => 'required',
+                    'address.city'          => 'required',
+                    'address.district'      => 'required',
+                    'address.address'       => 'required',
+                    'address.zip'           => 'required',
+                    'address.contact_name'  => 'required',
+                    'address.contact_phone' => 'required',
                     'sku_id' => [
                         'required',
                         function ($attribute, $value, $fail)

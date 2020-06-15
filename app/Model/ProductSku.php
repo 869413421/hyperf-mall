@@ -5,6 +5,8 @@ declare (strict_types=1);
 namespace App\Model;
 
 use App\Exception\ServiceException;
+use App\Facade\Redis;
+use Hyperf\Database\Model\Events\Saved;
 
 /**
  * @property int $id
@@ -62,5 +64,32 @@ class ProductSku extends ModelBase implements ModelInterface
         }
         var_dump($amount);
         return $this->newQuery()->where('id', $this->id)->increment('stock', $amount);
+    }
+
+    /**
+     * 如果当前是秒杀商品，将库存存入redis中
+     * @param Saved $event
+     */
+    public function saved(Saved $event)
+    {
+        var_dump('SKU触发');
+        var_dump($this->product->on_sale);
+        var_dump($this->product);
+        var_dump($this->product->type);
+        var_dump($this->product->type == Product::TYPE_SECKILL);
+        var_dump($this->product->seckill->is_after_end);
+        if ($this->product->on_sale && $this->product->type == Product::TYPE_SECKILL && !$this->product->seckill->is_after_end)
+        {
+            var_dump('成功');
+            $diff = $this->product->seckill->end_at->getTimestamp() - time();;
+            // 将剩余库存写入到 Redis 中，并设置该值过期时间为秒杀截止时间
+            Redis::setex('seckill_sku_' . $this->id, $diff, $this->stock);
+        }
+        else
+        {
+            var_dump('失败');
+            // 否则将该 SKU 的库存值从 Redis 中删除
+            Redis::del('seckill_sku_' . $this->id);
+        }
     }
 }
