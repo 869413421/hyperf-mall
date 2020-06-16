@@ -1,17 +1,17 @@
 # 简介
-这是一套基于hyperf商城resultApi
-系统已经实现模块
+这是一套基于hyperf商城resultApi  
+系统已经实现模块  
  - 用户模块
  - 权限模块
  - 商品模块
  - 订单模块
  - 支付模块
- 本项目所有功能参考
- Laravel 教程 - 电商实战(https://learnku.com/courses/laravel-shop/7.x)
- Laravel 教程 - 电商进阶(https://learnku.com/courses/ecommerce-advance/6.x)
- 开发
- 集成短信注册、邮箱注册、角色权限、支付宝网页支付、微信扫码支付、ElasticSearch商品搜索等一系列商城基础功能。
- 接口文档预览
+ 本项目所有功能参考 learnku 社区的两本课程  
+ [Laravel 教程 - 电商实战](https://learnku.com/courses/laravel-shop/7.x)  
+ [Laravel 教程 - 电商进阶](https://learnku.com/courses/ecommerce-advance/6.x)
+ 开发  
+ 集成短信注册、邮箱注册、角色权限、支付宝网页支付、微信扫码支付、ElasticSearch商品搜索等一系列商城基础功能。  
+ 接口文档预览  
  https://documenter.getpostman.com/view/10893401/Szzj7dAo
 
 # Requirements
