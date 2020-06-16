@@ -8,11 +8,18 @@
  - 支付模块
  本项目所有功能参考 learnku 社区的两本课程  
  [Laravel 教程 - 电商实战](https://learnku.com/courses/laravel-shop/7.x)  
- [Laravel 教程 - 电商进阶](https://learnku.com/courses/ecommerce-advance/6.x)
+ [Laravel 教程 - 电商进阶](https://learnku.com/courses/ecommerce-advance/6.x)  
  开发  
  集成短信注册、邮箱注册、角色权限、支付宝网页支付、微信扫码支付、ElasticSearch商品搜索等一系列商城基础功能。  
  接口文档预览  
  https://documenter.getpostman.com/view/10893401/Szzj7dAo
+ 
+#声明
+这个项目是本人在工作之余学习hyperf时编写的，所以emmm...,这并不是一个经过考验的项目，但是可能会适合一些刚学习hyperf的同学参考。在抄功能的同时，项目中也使用了很多hyperf的基础功能和组件，所以有问题可以尽情提交lssues,共同学习。    
+说下项目存在的问题
+1.项目初期因为并不打算编写太多功能，所以并没有很好组织项目结构，没有抽离DAO层，项目Controller中会有很多对模型的直接操作。  
+2.使用了第三方微信非协程组件，所以部分功能存在阻塞。  
+3.有部分冗余的对象，例如支付    
 
 # Requirements
 
