@@ -35,7 +35,6 @@
         "hyperf/validation": "^1.1",
         "hyperf/translation": "^1.1",
         "phper666/jwt-auth": "~2.0.1",
-        "hyperf/config-aliyun-acm": "^1.1",
         "hyperf/http-message": "^1.1",
         "phpmailer/phpmailer": "^6.1",
         "hyperf/filesystem": "^1.1",

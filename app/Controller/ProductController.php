@@ -36,6 +36,7 @@ class ProductController extends BaseController
         $search = $request->input('search');
         $order = $request->input('order');
         $field = $request->input('field');
+        $category_id = $request->input('category_id');
         $builder = Product::query();
 
         if ($search)
@@ -52,7 +53,11 @@ class ProductController extends BaseController
                     });
             });
         }
-        $builder->with('skus');
+        if ($category_id)
+        {
+            $builder->where('category_id', $category_id);
+        }
+        $builder->with('category');
 
 
         if ($order && $field)
@@ -61,6 +66,7 @@ class ProductController extends BaseController
         }
 
         $data = $this->getPaginateData($builder->paginate());
+        $data['category'] = Category::query(true)->orderBy('id')->get()->toArray();
         return $this->response->json(responseSuccess(200, '', $data));
     }
 
