@@ -57,7 +57,7 @@ class ProductController extends BaseController
         {
             $builder->where('category_id', $category_id);
         }
-        $builder->with('category');
+        $builder->with('category')->with('skus');
 
 
         if ($order && $field)
@@ -66,7 +66,6 @@ class ProductController extends BaseController
         }
 
         $data = $this->getPaginateData($builder->paginate());
-        $data['category'] = Category::query(true)->orderBy('id')->get()->toArray();
         return $this->response->json(responseSuccess(200, '', $data));
     }
 
