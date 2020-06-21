@@ -44,7 +44,7 @@ class ProductRequest extends FormRequest
                     'items.*.description' => 'required|string|between:2,1000',
                     'items.*.price' => 'required|numeric',
                     'items.*.stock' => 'required|integer|min:0',
-                    'properties' => 'required|array',
+                    'properties' => 'nullable|array',
                     'properties.*.name' => 'required|string|between:2,10',
                     'properties.*.value' => 'required|string|between:2,20',
                 ];
@@ -53,11 +53,15 @@ class ProductRequest extends FormRequest
             case 'PATCH':
                 $rules = [
                     'title' => 'nullable|string|between:2,50',
-                    'description' => 'nullable|string|between:2,1000',
+                    'description' => 'nullable|string|between:2,10000',
                     'image' => 'nullable|url',
                     'on_sale' => 'nullable|integer|boolean',
                     'price' => 'nullable|numeric',
                     'category_id' => 'nullable|exists:categories,id',
+                    'skus.*.title' => 'required|string|between:2,50',
+                    'skus.*.description' => 'required|string|between:2,1000',
+                    'skus.*.price' => 'required|numeric',
+                    'skus.*.stock' => 'required|numeric',
                     'properties' => 'nullable|array',
                     'properties.*.name' => 'nullable|string|between:2,10',
                     'properties.*.value' => 'nullable|string|between:2,20',

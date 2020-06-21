@@ -85,6 +85,7 @@ class ProductService
                 //触发秒杀商品保存事件
                 $this->eventDispatcher->dispatch(new SavedSeckillEvent($seckillProduct));
             }
+
             return $product;
         });
 

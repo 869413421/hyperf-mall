@@ -186,8 +186,9 @@ class ProductController extends BaseController
 
     public function store(ProductRequest $request)
     {
-        $this->productService->createProduct($request->validated());
-        return $this->response->json(responseSuccess(201));
+        $product = $this->productService->createProduct($request->validated());
+        $product = Product::with('skus', 'category')->where('id', $product->getKey())->first();
+        return $this->response->json(responseSuccess(201, '', $product));
     }
 
     public function update(ProductRequest $request)
@@ -198,6 +199,16 @@ class ProductController extends BaseController
             throw new ServiceException(403, '商品不存在');
         }
         $product->update($request->validated());
+        $skus = $request->validated()['skus'] ?? null;
+        if ($skus)
+        {
+            $product->skus()->delete();
+            foreach ($skus as $sku)
+            {
+                $sku = $product->skus()->make($sku);
+                $sku->save();
+            }
+        }
         $properties = $request->validated()['properties'] ?? null;
         if ($properties)
         {
