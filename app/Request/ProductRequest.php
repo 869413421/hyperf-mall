@@ -28,6 +28,7 @@ class ProductRequest extends FormRequest
                     'search' => 'nullable|string|between:2,50',
                     'order' => 'nullable|string|in:asc,desc',
                     'field' => 'nullable|string|in:sold_count,rating,review_count,price',
+                    'type' => 'nullable|string|in:normal,crowdfunding,seckill',
                 ];
                 return $rules;
                 break;

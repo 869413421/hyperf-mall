@@ -37,6 +37,7 @@ class ProductController extends BaseController
         $order = $request->input('order');
         $field = $request->input('field');
         $category_id = $request->input('category_id');
+        $type = $request->input('type');
         $builder = Product::query();
 
         if ($search)
@@ -57,7 +58,11 @@ class ProductController extends BaseController
         {
             $builder->where('category_id', $category_id);
         }
-        $builder->with('category')->with('skus');
+        if ($type)
+        {
+            $builder->where('type', $type);
+        }
+        $builder->with('category')->with('skus')->with('crowdfunding')->with('seckill');
 
 
         if ($order && $field)
