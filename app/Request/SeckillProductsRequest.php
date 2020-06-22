@@ -37,6 +37,8 @@ class SeckillProductsRequest extends FormRequest
                     'description' => 'required|string|between:2,1000',
                     'image' => 'required|url',
                     'on_sale' => 'required|integer|boolean',
+                    'long_title' => 'required|string|between:2,1000',
+                    'category_id' => 'nullable|exists:categories,id',
                     'price' => 'required|numeric',
                     'start_at' => 'required|date',
                     'end_at' => 'required|date',
@@ -55,8 +57,14 @@ class SeckillProductsRequest extends FormRequest
                     'image' => 'nullable|url',
                     'on_sale' => 'nullable|integer|boolean',
                     'price' => 'nullable|numeric',
-                    'start_at' => 'required|date',
-                    'end_at' => 'required|date',
+                    'start_at' => 'nullable|date',
+                    'end_at' => 'nullable|date',
+                    'category_id' => 'nullable|exists:categories,id',
+                    'items' => 'nullable|array',
+                    'items.*.title' => 'required|string|between:2,50',
+                    'items.*.description' => 'required|string|between:2,1000',
+                    'items.*.price' => 'required|numeric',
+                    'items.*.stock' => 'required|integer|min:0',
                 ];
                 return $rules;
                 break;

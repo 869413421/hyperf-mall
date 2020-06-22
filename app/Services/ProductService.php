@@ -34,6 +34,7 @@ class ProductService
             $category_id = $productData['category_id'] ?? null;
             $productAttributes = [
                 'title' => $productData['title'],
+                'long_title' => $productData['long_title'],
                 'description' => $productData['description'],
                 'image' => $productData['image'],
                 'on_sale' => $productData['on_sale'],
@@ -85,10 +86,52 @@ class ProductService
                 //触发秒杀商品保存事件
                 $this->eventDispatcher->dispatch(new SavedSeckillEvent($seckillProduct));
             }
-
+            $product = Product::with('skus', 'category', 'crowdfunding', 'seckill')->where('id', $product->getKey())->first();
             return $product;
         });
 
+    }
+
+    public function updateProduct(Product $product, array $updateDate)
+    {
+        $product->fill($updateDate);
+        $product->save();
+
+        $skus = $updateDate['items'] ?? [];
+        if ($skus)
+        {
+            $skuIds = collect($skus)->pluck('sku_id')->toArray();
+            $product->skus()->whereNotIn('id', $skuIds)->delete();
+        }
+        foreach ($updateDate['items'] as $sku)
+        {
+            $skuId = $sku['sku_id'] ?? null;
+            if ($skuId)
+            {
+                ProductSku::query()->where('id', $skuId)->update($sku);
+            }
+            else
+            {
+                $product->skus()->make($sku)->save();
+            }
+        }
+        //众筹商品
+        if (key_exists('target_amount', $updateDate))
+        {
+            $product->crowdfunding->fill($updateDate);
+            $product->crowdfunding->save();
+        }
+        //秒杀商品
+        if (key_exists('start_at', $updateDate) && key_exists('end_at', $updateDate))
+        {
+            $seckillProduct = $product->seckill;
+            $seckillProduct->fill($updateDate);
+            $seckillProduct->save();
+            //触发秒杀商品保存事件
+            $this->eventDispatcher->dispatch(new SavedSeckillEvent($seckillProduct));
+        }
+        $product = Product::with('skus', 'category', 'crowdfunding', 'seckill')->where('id', $product->getKey())->first();
+        return $product;
     }
 
     /**

@@ -35,11 +35,13 @@ class CrowdfundingRequest extends FormRequest
                 $rules = [
                     'title' => 'required|string|between:2,50',
                     'description' => 'required|string|between:2,1000',
+                    'long_title' => 'required|string|between:2,1000',
                     'image' => 'required|url',
                     'on_sale' => 'required|integer|boolean',
                     'price' => 'required|numeric',
                     'target_amount' => 'required|numeric',
                     'end_time' => 'required|date',
+                    'category_id' => 'nullable|exists:categories,id',
                     'items' => 'required|array',
                     'items.*.title' => 'required|string|between:2,50',
                     'items.*.description' => 'required|string|between:2,1000',
