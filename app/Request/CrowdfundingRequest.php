@@ -59,6 +59,13 @@ class CrowdfundingRequest extends FormRequest
                     'price' => 'nullable|numeric',
                     'target_amount' => 'required|numeric',
                     'end_time' => 'required|date',
+                    'category_id' => 'nullable|exists:categories,id',
+                    'items' => 'nullable|array',
+                    'items.*.id' => 'nullable|exists:product_skus,id',
+                    'items.*.title' => 'required|string|between:2,50',
+                    'items.*.description' => 'required|string|between:2,1000',
+                    'items.*.price' => 'required|numeric',
+                    'items.*.stock' => 'required|integer|min:0',
                 ];
                 return $rules;
                 break;

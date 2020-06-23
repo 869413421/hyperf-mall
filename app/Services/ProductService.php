@@ -98,14 +98,17 @@ class ProductService
         $product->save();
 
         $skus = $updateDate['items'] ?? [];
+        var_dump($skus);
         if ($skus)
         {
-            $skuIds = collect($skus)->pluck('sku_id')->toArray();
-            $product->skus()->whereNotIn('id', $skuIds)->delete();
+            $skuIds = collect($skus)->pluck('id')->toArray();
+            var_dump(1111);
+            var_dump($skuIds);
+            ProductSku::query()->where('product_id', $product->getKey())->whereNotIn('id', $skuIds)->delete();
         }
         foreach ($updateDate['items'] as $sku)
         {
-            $skuId = $sku['sku_id'] ?? null;
+            $skuId = $sku['id'] ?? null;
             if ($skuId)
             {
                 ProductSku::query()->where('id', $skuId)->update($sku);

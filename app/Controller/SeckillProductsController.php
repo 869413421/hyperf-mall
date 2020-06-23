@@ -41,10 +41,8 @@ class SeckillProductsController extends BaseController
             throw new ServiceException(403, '商品不存在');
         }
         $data = $request->validated();
-        $product->update($data);
-        $product->seckill->fill($data);
-        $product->seckill->save();
-        return $this->response->json(responseSuccess(200, '更新成功'));
+        $product = $this->productService->updateProduct($product, $data);
+        return $this->response->json(responseSuccess(200, '更新成功', $product));
     }
 
     public function delete()
