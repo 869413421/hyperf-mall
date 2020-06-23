@@ -12,7 +12,7 @@
  [Laravel 教程 - 电商实战](https://learnku.com/courses/laravel-shop/7.x)  
  [Laravel 教程 - 电商进阶](https://learnku.com/courses/ecommerce-advance/6.x)  
  
- 集成短信注册、邮箱注册、角色权限、支付宝网页支付、微信扫码支付、众筹、秒杀、ElasticSearch商品分面搜索等一系列商城基础功能。  
+ 集成短信注册、邮箱注册、角色权限、支付宝网页支付、微信扫码支付、分期支付、众筹、无限级分类、秒杀、ElasticSearch商品分面搜索等一系列商城基础功能。  
  接口文档预览  
  https://documenter.getpostman.com/view/10893401/Szzj7dAo
  
@@ -25,7 +25,9 @@
 
 2.使用了第三方微信非协程组件，所以部分功能存在阻塞。  
 
-3.有部分冗余的对象，例如支付    
+3.有部分冗余的对象，例如支付   
+
+4.因为微信支付测试门槛过高，微信支付尚未测试
 
 # 系统要求
 
