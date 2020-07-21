@@ -55,7 +55,7 @@
 `php bin/hyperf.php es:migrate`
 
 执行同步商品到ElasticSearch命令  
-`php bin/hyperf.php es:migrate`
+`php bin/hyperf.php es:sync-products`
 
 启动  
 `php watch`
